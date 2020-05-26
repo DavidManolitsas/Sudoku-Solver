@@ -3,7 +3,10 @@
  */
 package grid;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -149,6 +152,10 @@ public class StdSudokuGrid extends SudokuGrid {
     //getters
     public int[][] getLayout() {
         return layout;
+    }
+
+    public void setLayout(int[][] layout) {
+        this.layout = layout;
     }
 
     public int getMinValue() {

@@ -3,9 +3,7 @@
  */
 package solver;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import grid.StdSudokuGrid;
 import grid.SudokuGrid;
@@ -16,18 +14,16 @@ import grid.SudokuGrid;
  */
 public class AlgorXSolver extends StdSudokuSolver {
     // TODO: Add attributes as needed.
-    private int size;
     private int[][] layout;
-    private boolean[][] coverBoard;
+    private int size;
     private final int EMPTY = 0;
     private int minValue;
     private int maxValue;
     private int sectorSize;
 
-    private ColumnNode header;
-    private List<DancingNode> answer;
+    private int[][] matrix;
 
-
+    private final int COVER_START_INDEX = 1;
 
     public AlgorXSolver() {
         // TODO: any initialisation you want to implement.
@@ -47,270 +43,220 @@ public class AlgorXSolver extends StdSudokuSolver {
             initAlgorXSolver(grid);
         }
         // TODO: your implementation of the Algorithm X solver for standard Sudoku.
+        matrix = initCoverMatrix(layout);
 
 
         // placeholder
         return true;
     } // end of solve()
 
-    private int getIndex(int row, int column, int value) {
+
+
+    private int getIndexInMatrix(int row, int column, int value) {
         return (row - 1) * size * size + (column - 1) * size + (value - 1);
     }
 
-    private boolean[][] createExactCoverBoard() {
+    private int[][] createCoverMatrix() {
+        int[][] coverMatrix = new int [size * size * maxValue][size * size * 4];
 
-        int numOfConstraints = 4;
+        int header  = 0;
+        header = createCellConstraints(coverMatrix, header);
+        header = createRowConstraints(coverMatrix, header);
+        header = createColumnConstraints(coverMatrix, header);
+        createBoxConstraints(coverMatrix, header);
 
-        boolean[][] coverBoard = new boolean[size * size * maxValue][size * size * numOfConstraints];
-
-        int hBase = 0;
-        hBase = checkCellConstraint(coverBoard, hBase);
-        hBase = checkRowConstraint(coverBoard, hBase);
-        hBase = checkColumnConstraint(coverBoard, hBase);
-        checkSubsectionConstraint(coverBoard, hBase);
-
-        return coverBoard;
+        return coverMatrix;
     }
 
-    private int checkSubsectionConstraint(boolean[][] coverBoard, int hBase) {
-        for (int row = 1; row <= size; row += sectorSize) {
-            for (int column = 1; column <= size; column += sectorSize) {
-                for (int n = 1; n <= size; n++, hBase++) {
+    private int createBoxConstraints(int[][] matrix, int header) {
+        for (int row = COVER_START_INDEX; row <= size; row += sectorSize) {
+            for (int column = COVER_START_INDEX; column <= size; column += sectorSize) {
+                for (int n = COVER_START_INDEX; n <= size; n++, header++) {
                     for (int rowDelta = 0; rowDelta < sectorSize; rowDelta++) {
                         for (int columnDelta = 0; columnDelta < sectorSize; columnDelta++) {
-                            int index = getIndex(row + rowDelta, column + columnDelta, n);
-                            coverBoard[index][hBase] = true;
+                            int index = getIndexInMatrix(row + rowDelta, column + columnDelta, n);
+                            matrix[index][header] = 1;
                         }
                     }
                 }
             }
         }
-        return hBase;
+
+        return header;
     }
 
-    private int checkColumnConstraint(boolean[][] coverBoard, int hBase) {
-        for (int column = 1; column <= size; column++) {
-            for (int n = 1; n <= size; n++, hBase++) {
-                for (int row = 1; row <= size; row++) {
-                    int index = getIndex(row, column, n);
-                    coverBoard[index][hBase] = true;
+    private int createColumnConstraints(int[][] matrix, int header) {
+        for (int column = COVER_START_INDEX; column <= size; column++) {
+            for (int n = COVER_START_INDEX; n <= size; n++, header++) {
+                for (int row = COVER_START_INDEX; row <= size; row++) {
+                    int index = getIndexInMatrix(row, column, n);
+                    matrix[index][header] = 1;
                 }
             }
         }
-        return hBase;
+
+        return header;
     }
 
-    private int checkRowConstraint(boolean[][] coverBoard, int hBase) {
-        for (int row = 1; row <= size; row++) {
-            for (int n = 1; n <= size; n++, hBase++) {
-                for (int column = 1; column <= size; column++) {
-                    int index = getIndex(row, column, n);
-                    coverBoard[index][hBase] = true;
+    private int createRowConstraints(int[][] matrix, int header) {
+        for (int row = COVER_START_INDEX; row <= size; row++) {
+            for (int n = COVER_START_INDEX; n <= size; n++, header++) {
+                for (int column = COVER_START_INDEX; column <= size; column++) {
+                    int index = getIndexInMatrix(row, column, n);
+                    matrix[index][header] = 1;
                 }
             }
         }
-        return hBase;
+
+        return header;
     }
 
-    private int checkCellConstraint(boolean[][] coverBoard, int hBase) {
-        for (int row = 1; row <= size; row++) {
-            for (int column = 1; column <= size; column++, hBase++) {
-                for (int n = 1; n <= size; n++) {
-                    int index = getIndex(row, column, n);
-                    coverBoard[index][hBase] = true;
+    private int createCellConstraints(int[][] matrix, int header) {
+        for (int row = COVER_START_INDEX; row <= size; row++) {
+            for (int column = COVER_START_INDEX; column <= size; column++, header++) {
+                for (int n = COVER_START_INDEX; n <= size; n++) {
+                    int index = getIndexInMatrix(row, column, n);
+                    matrix[index][header] = 1;
                 }
             }
         }
-        return hBase;
+
+        return header;
     }
 
-    private boolean[][] initializeExactCoverBoard(int[][] board) {
-        boolean[][] coverBoard = createExactCoverBoard();
-        for (int row = 1; row <= size; row++) {
-            for (int column = 1; column <= size; column++) {
-                int n = board[row - 1][column - 1];
+    private int[][] initCoverMatrix(int[][] layout) {
+        int[][] coverMatrix = createCoverMatrix();
+
+        // Taking into account the values already entered in Sudoku's grid instance
+        for (int row = COVER_START_INDEX; row <= size; row++) {
+            for (int column = COVER_START_INDEX; column <= size; column++) {
+                int n = layout[row - 1][column - 1];
+
                 if (n != EMPTY) {
                     for (int num = minValue; num <= maxValue; num++) {
                         if (num != n) {
-                            Arrays.fill(coverBoard[getIndex(row, column, num)], false);
+                            Arrays.fill(coverMatrix[getIndexInMatrix(row, column, num)], 0);
                         }
                     }
                 }
             }
         }
-        return coverBoard;
+
+        return coverMatrix;
     }
 
-    private ColumnNode makeDLXBoard(boolean[][] grid) {
-        int COLS = grid[0].length;
 
-        ColumnNode headerNode = new ColumnNode("header");
-        List<ColumnNode> columnNodes = new ArrayList<>();
 
-        for (int i = 0; i < COLS; i++) {
-            ColumnNode n = new ColumnNode(Integer.toString(i));
-            columnNodes.add(n);
-            headerNode = (ColumnNode) headerNode.hookRight(n);
-        }
-        headerNode = headerNode.R.C;
 
-        for (boolean[] aGrid : grid) {
-            DancingNode prev = null;
-            for (int j = 0; j < COLS; j++) {
-                if (aGrid[j]) {
-                    ColumnNode col = columnNodes.get(j);
-                    DancingNode newNode = new DancingNode(col);
-                    if (prev == null) prev = newNode;
-                    col.U.hookDown(newNode);
-                    prev = prev.hookRight(newNode);
-                    col.size++;
-                }
+
+//    private int getIndex(int row, int column, int value) {
+//        return (row - 1) * size * size + (column - 1) * size + (value - 1);
+//    }
+//
+//    private boolean[][] createExactCoverMatrix() {
+//
+//        int numOfConstraints = 4;
+//
+//        boolean[][] matrix = new boolean[size * size * maxValue][size * size * numOfConstraints];
+//
+//        int hBase = 0;
+//        hBase = checkCellConstraint(matrix, hBase);
+//        hBase = checkRowConstraint(matrix, hBase);
+//        hBase = checkColumnConstraint(matrix, hBase);
+//        checkSubsectionConstraint(matrix, hBase);
+//
+//        return matrix;
+//    }
+//
+//    private int checkSubsectionConstraint(boolean[][] coverMatrix, int hBase) {
+//        for (int row = 1; row <= size; row += sectorSize) {
+//            for (int column = 1; column <= size; column += sectorSize) {
+//                for (int n = 1; n <= size; n++, hBase++) {
+//                    for (int rowDelta = 0; rowDelta < sectorSize; rowDelta++) {
+//                        for (int columnDelta = 0; columnDelta < sectorSize; columnDelta++) {
+//                            int index = getIndex(row + rowDelta, column + columnDelta, n);
+//                            coverMatrix[index][hBase] = true;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return hBase;
+//    }
+//
+//    private int checkColumnConstraint(boolean[][] coverMatrix, int hBase) {
+//        for (int column = 1; column <= size; column++) {
+//            for (int n = 1; n <= size; n++, hBase++) {
+//                for (int row = 1; row <= size; row++) {
+//                    int index = getIndex(row, column, n);
+//                    coverMatrix[index][hBase] = true;
+//                }
+//            }
+//        }
+//        return hBase;
+//    }
+//
+//    private int checkRowConstraint(boolean[][] coverMatrix, int hBase) {
+//        for (int row = 1; row <= size; row++) {
+//            for (int n = 1; n <= size; n++, hBase++) {
+//                for (int column = 1; column <= size; column++) {
+//                    int index = getIndex(row, column, n);
+//                    coverMatrix[index][hBase] = true;
+//                }
+//            }
+//        }
+//        return hBase;
+//    }
+//
+//    private int checkCellConstraint(boolean[][] coverMatrix, int hBase) {
+//        for (int row = 1; row <= size; row++) {
+//            for (int column = 1; column <= size; column++, hBase++) {
+//                for (int n = 1; n <= size; n++) {
+//                    int index = getIndex(row, column, n);
+//                    coverMatrix[index][hBase] = true;
+//                }
+//            }
+//        }
+//        return hBase;
+//    }
+//
+//    private boolean[][] initExactCoverMatrix(int[][] layout) {
+//        boolean[][] matrix = createExactCoverMatrix();
+//        for (int row = 1; row <= size; row++) {
+//            for (int column = 1; column <= size; column++) {
+//                int n = layout[row - 1][column - 1];
+//                if (n != EMPTY) {
+//                    for (int num = minValue; num <= maxValue; num++) {
+//                        if (num != n) {
+//                            Arrays.fill(matrix[getIndex(row, column, num)], false);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return matrix;
+//    }
+//
+    public void printMatrix() {
+        System.out.println("\nExact Cover Matrix:");
+//
+//        StringBuilder constraints = new StringBuilder();
+//        String name = "      Cell Constraints                Row Constraints                 Column Constraints              Block Constraints               \n";
+//        String vals = "      1       2       3       4       1       2       3       4       1       2       3       4       1       2       3       4       \n";
+//        String nums = "      1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 \n";
+//        String keys = "r c # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ";
+//        constraints.append(name).append(vals).append(nums).append(keys);
+//        System.out.println(constraints);
+//        int row = 0;
+
+
+        for(int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                System.out.print(matrix[i][j] + " ");
             }
-        }
 
-        headerNode.size = COLS;
-
-        return headerNode;
-    }
-
-
-    private ColumnNode selectColumnNodeHeuristic() {
-        int min = Integer.MAX_VALUE;
-        ColumnNode ret = null;
-        for (
-                ColumnNode c = (ColumnNode) header.R;
-                c != header;
-                c = (ColumnNode) c.R) {
-            if (c.size < min) {
-                min = c.size;
-                ret = c;
-            }
-        }
-        return ret;
-    }
-
-    private void search(int k) {
-        if (header.R == header) {
-//            handler.handleSolution(answer);
-        } else {
-            ColumnNode c = selectColumnNodeHeuristic();
-            c.cover();
-
-            for (DancingNode r = c.D; r != c; r = r.D) {
-                answer.add(r);
-
-                for (DancingNode j = r.R; j != r; j = j.R) {
-                    j.C.cover();
-                }
-
-                search(k + 1);
-
-                r = answer.remove(answer.size() - 1);
-                c = r.C;
-
-                for (DancingNode j = r.L; j != r; j = j.L) {
-                    j.C.uncover();
-                }
-            }
-            c.uncover();
+            System.out.println();
         }
     }
-
-
-
-    /**
-     * Dancing Node Class
-     */
-    class DancingNode {
-        DancingNode L, R, U, D;
-        ColumnNode C;
-
-        DancingNode hookDown(DancingNode node) {
-            assert (this.C == node.C);
-            node.D = this.D;
-            node.D.U = node;
-            node.U = this;
-            this.D = node;
-            return node;
-        }
-
-        DancingNode hookRight(DancingNode node) {
-            node.R = this.R;
-            node.R.L = node;
-            node.L = this;
-            this.R = node;
-            return node;
-        }
-
-        void unlinkLR() {
-            this.L.R = this.R;
-            this.R.L = this.L;
-        }
-
-        void relinkLR() {
-            this.L.R = this.R.L = this;
-        }
-
-        void unlinkUD() {
-            this.U.D = this.D;
-            this.D.U = this.U;
-        }
-
-        void relinkUD() {
-            this.U.D = this.D.U = this;
-        }
-
-        DancingNode() {
-            L = R = U = D = this;
-        }
-
-        DancingNode(ColumnNode c) {
-            this();
-            C = c;
-        }
-
-
-    }
-
-
-    /**
-     * Column Node Class
-     */
-    class ColumnNode extends DancingNode {
-        int size;
-        String name;
-
-        ColumnNode(String n) {
-            super();
-            size = 0;
-            name = n;
-            C = this;
-        }
-
-        void cover() {
-            unlinkLR();
-            for (DancingNode i = this.D; i != this; i = i.D) {
-                for (DancingNode j = i.R; j != i; j = j.R) {
-                    j.unlinkUD();
-                    j.C.size--;
-                }
-            }
-        }
-
-        void uncover() {
-            for (DancingNode i = this.U; i != this; i = i.U) {
-                for (DancingNode j = i.L; j != i; j = j.L) {
-                    j.C.size++;
-                    j.relinkUD();
-                }
-            }
-            relinkLR();
-        }
-
-
-    }
-
-
-
 
 } // end of class AlgorXSolver
