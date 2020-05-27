@@ -1,4 +1,4 @@
-package dancingLink;
+package dancingLinkNodes;
 
 /**
  * @author David Manolitsas
@@ -14,24 +14,24 @@ public class ColumnNode extends DancingNode {
         super();
         this.size = 0;
         this.name = name;
-        this.column = this;
+        this.colNode = this;
     }
 
     public void cover() {
         removeLeftRight();
 
-        for (DancingNode i = bottom; i != this; i = i.bottom) {
-            for (DancingNode j = i.right; j != i; j = j.right) {
+        for (DancingNode i = down; i != this; i = i.down) {
+            for (DancingNode j = i.getRight; j != i; j = j.getRight) {
                 j.removeTopBottom();
-                j.column.size--;
+                j.colNode.size--;
             }
         }
     }
 
     public void uncover() {
-        for (DancingNode i = top; i != this; i = i.top) {
+        for (DancingNode i = up; i != this; i = i.up) {
             for (DancingNode j = i.left; j != i; j = j.left) {
-                j.column.size++;
+                j.colNode.size++;
                 j.reinsertTopBottom();
             }
         }
@@ -54,4 +54,9 @@ public class ColumnNode extends DancingNode {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void incrementSize() {
+        this.size++;
+    }
+
 }

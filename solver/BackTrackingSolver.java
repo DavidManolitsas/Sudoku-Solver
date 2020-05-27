@@ -67,16 +67,19 @@ public class BackTrackingSolver extends StdSudokuSolver {
         return (validateRow(row) && validateCol(col) && validateSector(row, col));
     }
 
+    // Check the row constraints
     private boolean validateRow(int row) {
         boolean[] validate = new boolean[size];
         return IntStream.range(0, size).allMatch(column -> checkConstraint(row, column, validate));
     }
 
+    // Check column constraints
     private boolean validateCol(int col) {
         boolean[] validate = new boolean[size];
         return IntStream.range(0, size).allMatch(row -> checkConstraint(row, col, validate));
     }
 
+    // Check constraints of each sub section
     private boolean validateSector(int row, int col) {
         boolean[] validate = new boolean[size];
         int sectorStartRow = (row / sectorSize) * sectorSize;
@@ -106,6 +109,7 @@ public class BackTrackingSolver extends StdSudokuSolver {
         return true;
     }
 
+    // For Testing
     @Override
     public String toString() {
         return "size: " + size + "x" +size + ", Min Value: " + minValue + ", Max Value: " + maxValue + ", Sector Size: " + sectorSize + "x" + sectorSize;
