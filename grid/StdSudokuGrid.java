@@ -61,14 +61,7 @@ public class StdSudokuGrid extends SudokuGrid {
             else if(lineCount == 2) {
                 // assign the smallest and largest value of the grid
                 String[] line = read.nextLine().split(" ");
-                for (int i = 0; i < line.length; i++){
-                    if (i == 0){
-                        minValue = Integer.parseInt(line[i]);
-                    }
-                    else if (i == line.length - 1) {
-                        maxValue = Integer.parseInt(line[i]);
-                    }
-                }
+                initValues(line);
             }
             else if (lineCount > 2) {
                 // insert all values into the grid
@@ -82,18 +75,37 @@ public class StdSudokuGrid extends SudokuGrid {
         }
 
         //TODO: testing
-        System.out.println("size of the grid is: " + rows + "x" + cols + "\nMin value: " + minValue + " Max value: " + maxValue  + " , Sectors are " + sectorSize + "x" + sectorSize);
+        System.out.print(" Size of the grid is: " + rows + "x" + cols + "\nMin value: " + minValue + " Max value: " + maxValue  + ", Sectors are " + sectorSize + "x" + sectorSize + "\n");
     } // end of initBoard()
 
     private void initValues(String[] line) {
-        for (int i = 0; i < line.length; i++){
-            if (i == 0){
-                minValue = Integer.parseInt(line[i]);
-            }
-            else if (i == line.length - 1) {
-                maxValue = Integer.parseInt(line[i]);
+        values = new int[rows];
+        for (int i = 0; i < line.length; i++) {
+            values[i] = Integer.parseInt(line[i]);
+        }
+
+        // find max value
+        maxValue = values[0];
+        for (int i = 1; i < values.length; i++) {
+            if (values[i] > maxValue) {
+                maxValue = values[i];
             }
         }
+
+        // find min value
+        minValue = values[0];
+        for (int i = 1; i < values.length; i++) {
+            if (values[i] < minValue) {
+                minValue = values[i];
+            }
+        }
+
+        // TODO: testing, delete before submission
+        System.out.print("Values: ");
+        for (int val : values) {
+            System.out.print(val + " ");
+        }
+
     }
 
 
