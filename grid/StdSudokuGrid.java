@@ -27,6 +27,7 @@ public class StdSudokuGrid extends SudokuGrid {
     private int rows;
     private int cols;
     private int sectorSize;
+    private int[] values;
     private int minValue;
     private int maxValue;
     private final int EMPTY = 0;
@@ -84,6 +85,17 @@ public class StdSudokuGrid extends SudokuGrid {
         System.out.println("size of the grid is: " + rows + "x" + cols + "\nMin value: " + minValue + " Max value: " + maxValue  + " , Sectors are " + sectorSize + "x" + sectorSize);
     } // end of initBoard()
 
+    private void initValues(String[] line) {
+        for (int i = 0; i < line.length; i++){
+            if (i == 0){
+                minValue = Integer.parseInt(line[i]);
+            }
+            else if (i == line.length - 1) {
+                maxValue = Integer.parseInt(line[i]);
+            }
+        }
+    }
+
 
     @Override
     public void outputGrid(String filename) throws FileNotFoundException, IOException {
@@ -99,18 +111,19 @@ public class StdSudokuGrid extends SudokuGrid {
 
         StringBuilder grid = new StringBuilder();
 
+        int count = 0;
         for (int[] row : layout) {
             for (int value : row) {
-                if(value == EMPTY) {
-                    grid.append(". ");
-                }
-                else {
-                    grid.append(value).append(" ");
+                count++;
+                if (count == cols) {
+                    grid.append(value);
+                } else {
+                    grid.append(value).append(",");
                 }
             }
+            count = 0;
             grid.append("\n");
         }
-
         // placeholder
         return String.valueOf(grid).trim();
     } // end of toString()
