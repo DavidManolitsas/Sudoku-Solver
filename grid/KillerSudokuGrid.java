@@ -7,7 +7,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 
 /**
@@ -22,6 +26,8 @@ import java.util.Scanner;
 public class KillerSudokuGrid extends SudokuGrid {
     // TODO: Add your own attributes
     private int[][] layout;
+    private final int EMPTY = 0;
+    private List<KillerCage> cages;
     private int size;
     private int sectorSize;
     private int[] values;
@@ -41,10 +47,10 @@ public class KillerSudokuGrid extends SudokuGrid {
 
     @Override
     public void initGrid(String filename) throws FileNotFoundException, IOException {
-        // TODO
         File inputFile = new File(filename);
         Scanner read = new Scanner(inputFile);
         int lineCount = 0;
+        cages = new ArrayList<KillerCage>();
 
         while (read.hasNextLine()) {
             lineCount++;
@@ -78,6 +84,7 @@ public class KillerSudokuGrid extends SudokuGrid {
 
                     cage.getPositions().add(cagePos);
                 }
+                cages.add(cage);
                 System.out.println(cage.toString());
             }
         }
@@ -151,21 +158,58 @@ public class KillerSudokuGrid extends SudokuGrid {
 
     @Override
     public boolean validate() {
-        // TODO
+        for (KillerCage cage : cages) {
+            if(!validateCage(cage)) {
+                return false;
+            }
+        }
 
-        // placeholder
-        return false;
+        for(int i = 0; i < size; i++) {
+            Set<Integer> rowSet = new HashSet<>();
+            Set<Integer> colSet = new HashSet<>();
+            Set<Integer> sectorSet = new HashSet<>();
+
+            for(int j = 0; j < size; j++) {
+                // Base case, check if the value is in the appropriate range
+                if(layout[i][j] < minValue || layout[i][j] > maxValue) {
+                    return false;
+                }
+                // check if the value layout[i][j] is in a Row Set
+                if(layout[i][j] == EMPTY && !rowSet.add(layout[i][j])) {
+                    return false;
+                }
+                // check if the value layout[i][j] is in a Column Set
+                if(layout[j][i] == EMPTY && !colSet.add(layout[j][i])) {
+                    return false;
+                }
+                int rowIndex = sectorSize * (i/sectorSize);
+                int colIndex = sectorSize * (i % sectorSize);
+                if(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize] != EMPTY && !sectorSet.add(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize])) {
+                    return false;
+                }
+
+            }
+        }
+
+        return true;
+
     } // end of validate()
 
+    /**
+     * Validate if the cage values equal the correct cage total
+     * @param cage the cage that is being validated
+     * @return true if the values in the cage equal the cage total, otherwise return false
+     */
+    public boolean validateCage(KillerCage cage) {
+        int sum = 0;
+        for(int[] rowCol : cage.getPositions()) {
+            int value = layout[rowCol[0]][rowCol[1]];
+            sum += value;
+        }
 
-    public void setCell(int row, int col, int value) {
-        layout[row][col] = value;
+        return sum == cage.getTotal();
     }
 
-
-    public int getCell(int row, int col) {
-        return layout[row][col];
-    }
 
     public int[][] getLayout() {
         return layout;
@@ -173,6 +217,14 @@ public class KillerSudokuGrid extends SudokuGrid {
 
     public void setLayout(int[][] layout) {
         this.layout = layout;
+    }
+
+    public List<KillerCage> getCages() {
+        return cages;
+    }
+
+    public void setCages(List<KillerCage> cages) {
+        this.cages = cages;
     }
 
     public int getSize() {

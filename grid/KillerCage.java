@@ -14,7 +14,7 @@ public class KillerCage {
     List<int[]> positions;
 
     public KillerCage() {
-        positions = new ArrayList<>();
+        positions = new ArrayList<int[]>();
     }
 
     public int getTotal() {
@@ -32,6 +32,21 @@ public class KillerCage {
     public void setPositions(List<int[]> positions) {
         this.positions = positions;
     }
+
+    public int getCurrentSum(int[][] layout) {
+        int sum = 0;
+        for(int[] rowCol : positions) {
+            int value = layout[rowCol[0]][rowCol[1]];
+            sum += value;
+        }
+
+        return sum;
+    }
+
+    public boolean isFull(int[][] layout) {
+        return true;
+    }
+
 
     //TODO: this is for testing, delete before submission
     @Override
