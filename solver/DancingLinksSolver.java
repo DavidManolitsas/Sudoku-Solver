@@ -184,8 +184,8 @@ public class DancingLinksSolver extends StdSudokuSolver {
             for (DancingNode row = col.getDown(); row != col; row = row.getDown()) {
                 answer.add(row);
 
-                for (DancingNode dancingNode = row.getRight(); dancingNode != row; dancingNode = dancingNode.getRight()) {
-                    dancingNode.getColNode().cover();
+                for (DancingNode j = row.getRight(); j != row; j = j.getRight()) {
+                    j.getColNode().cover();
                 }
 
                 search(key + 1);

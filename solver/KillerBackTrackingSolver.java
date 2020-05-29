@@ -10,8 +10,7 @@ import grid.SudokuGrid;
 /**
  * Backtracking solver for Killer Sudoku.
  */
-public class KillerBackTrackingSolver extends KillerSudokuSolver
-{
+public class KillerBackTrackingSolver extends KillerSudokuSolver {
     // TODO: Add attributes as needed.
 
     public KillerBackTrackingSolver() {
