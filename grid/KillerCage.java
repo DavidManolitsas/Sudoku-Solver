@@ -43,11 +43,6 @@ public class KillerCage {
         return sum;
     }
 
-    public boolean isFull(int[][] layout) {
-        return true;
-    }
-
-
     //TODO: this is for testing, delete before submission
     @Override
     public String toString() {

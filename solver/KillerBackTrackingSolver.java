@@ -55,7 +55,7 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
     public boolean solve() {
         int row = -1;
         int col = -1;
-        boolean isComplete = true;
+        boolean isEmpty = true;
 
         for (int r = 0; r < size; r++) {
             for (int c = 0; c < size; c++) {
@@ -64,18 +64,18 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
                     row = r;
                     col = c;
                     // We still have some remaining missing values in Sudoku
-                    isComplete = false;
+                    isEmpty = false;
                     break;
                 }
             }
 
-            if (!isComplete) {
+            if (!isEmpty) {
                 break;
             }
         }
 
         // no empty space left
-        if (isComplete) {
+        if (isEmpty) {
             return true;
         }
 
@@ -83,6 +83,15 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
         for (int value = 1; value <= size; value++) {
             if (isValid(row, col, value)) {
                 setCellValue(row, col, value);
+                /**
+                 * print grid
+                 */
+                System.out.println("Inserting... " + value);
+                System.out.println(printSudoku());
+                /**
+                 * end print grid
+                 */
+
                 if (solve()) {
                     return true;
                 }
@@ -96,7 +105,7 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
     }
 
     public boolean isValid(int row, int col, int value) {
-        return (validateRow(row, value) && validateColumn(col, value) && validateSector(row, col, value) && validateCage(row, col));
+        return (validateRow(row, value) && validateColumn(col, value) && validateSector(row, col, value) && validateCage(row, col, value));
     }
 
     private boolean validateRow(int row, int value) {
@@ -112,7 +121,7 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
 
     private boolean validateColumn(int col, int value) {
         // Validate column
-        for (int row = 0; row < layout.length; row++) {
+        for (int row = 0; row < size; row++) {
             // if the number we are trying to place is already present in that column, return false;
             if (getCellValue(row, col) == value) {
                 return false;
@@ -139,13 +148,27 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
         return true;
     }
 
-    private boolean validateCage(int row, int col) {
+    private boolean validateCage(int row, int col, int value) {
+        setCellValue(row, col, value);
         KillerCage cage = getCage(row, col);
         int sum = cage.getCurrentSum(layout);
+        System.out.println(row + "," + col + " " + sum);
 
-        System.out.println(cage.toString() + " Sum: " + sum + " Total: " + cage.getTotal());
 
-        return true;
+        if (layout[row][col] == EMPTY) {
+            setCellValue(row, col, EMPTY);
+            return true;
+        }
+        else {
+            if (sum <= cage.getTotal()) {
+                setCellValue(row, col, EMPTY);
+                return true;
+            }
+            else {
+                setCellValue(row, col, EMPTY);
+                return false;
+            }
+        }
     }
 
 
@@ -167,6 +190,26 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
 
     public int getCellValue(int row, int col) {
         return layout[row][col];
+    }
+
+    private String printSudoku() {
+        StringBuilder grid = new StringBuilder();
+
+        int count = 0;
+        for (int[] rw : layout) {
+            for (int v : rw) {
+                count++;
+                if (count == size) {
+                    grid.append(v);
+                } else {
+                    grid.append(v).append(",");
+                }
+            }
+            count = 0;
+            grid.append("\n");
+        }
+
+        return grid.toString();
     }
 
 } // end of class KillerBackTrackingSolver()

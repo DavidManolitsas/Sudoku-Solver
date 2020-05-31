@@ -33,7 +33,7 @@ public class DancingLinksSolver extends StdSudokuSolver {
     //Dancing Link
     private ColumnNode head;
     private List<DancingNode> answer;
-    int[][] solution;
+    private int[][] solution;
 
     public DancingLinksSolver() {
 
