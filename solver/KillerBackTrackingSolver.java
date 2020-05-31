@@ -14,97 +14,69 @@ import grid.SudokuGrid;
 /**
  * Backtracking solver for Killer Sudoku.
  */
-public class KillerBackTrackingSolver extends KillerSudokuSolver {
-    // TODO: Add attributes as needed.
+public class KillerBackTrackingSolver
+        extends KillerSudokuSolver {
+
     private int size;
     private int[][] layout;
     private List<KillerCage> cages;
     private final int EMPTY = 0;
-    private int minValue;
-    private int maxValue;
+    private int[] values;
     private int sectorSize;
 
     public KillerBackTrackingSolver() {
-        // TODO: any initialisation you want to implement.
+
     } // end of KillerBackTrackingSolver()
 
     private void initVariables(SudokuGrid grid) {
         this.layout = ((KillerSudokuGrid) grid).getLayout();
         this.cages = ((KillerSudokuGrid) grid).getCages();
         this.size = ((KillerSudokuGrid) grid).getSize();
-        this.minValue = ((KillerSudokuGrid) grid).getMinValue();
-        this.maxValue = ((KillerSudokuGrid) grid).getMaxValue();
+        this.values =((KillerSudokuGrid) grid).getValues();
         this.sectorSize = (int) Math.sqrt(size);
     }
 
 
     @Override
     public boolean solve(SudokuGrid grid) {
+
         // TODO: your implementation of a backtracking solver for Killer Sudoku.
         if (layout == null) {
             initVariables(grid);
         }
 
-        solve();
-        ((KillerSudokuGrid) grid).setLayout(layout);
-        return grid.validate();
+        // Iterate through the grid
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                // Check if the position is empty
+                if (getCellValue(row, col) == EMPTY) {
 
+                    //  Cycle through each potential value
+                    for (int inputValue : values) {
+                        // Check if the input value is valid
+                        if (isValid(row, col, inputValue)) {
+                            // if input value is valid, set input value to the layout
+                            setCellValue(row, col, inputValue);
+                            // Recurse
+                            if (solve(grid)) {
+                                return true;
+                            } else {
+                                // if it is an invalid position set the current position back to empty
+                                setCellValue(row, col, EMPTY);
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+
+        return true;
     } // end of solve()
 
 
-    public boolean solve() {
-        int row = -1;
-        int col = -1;
-        boolean isEmpty = true;
-
-        for (int r = 0; r < size; r++) {
-            for (int c = 0; c < size; c++) {
-
-                if (layout[r][c] == EMPTY) {
-                    row = r;
-                    col = c;
-                    // We still have some remaining missing values in Sudoku
-                    isEmpty = false;
-                    break;
-                }
-            }
-
-            if (!isEmpty) {
-                break;
-            }
-        }
-
-        // no empty space left
-        if (isEmpty) {
-            return true;
-        }
-
-        // else for each-row backtrack
-        for (int value = 1; value <= size; value++) {
-            if (isValid(row, col, value)) {
-                setCellValue(row, col, value);
-                /**
-                 * print grid
-                 */
-                System.out.println("Inserting... " + value);
-                System.out.println(printSudoku());
-                /**
-                 * end print grid
-                 */
-
-                if (solve()) {
-                    return true;
-                }
-                else {
-                    // replace it
-                    setCellValue(row, col, EMPTY);
-                }
-            }
-        }
-        return false;
-    }
-
     public boolean isValid(int row, int col, int value) {
+        // Check constraints of the sudoku board
         return (validateRow(row, value) && validateColumn(col, value) && validateSector(row, col, value) && validateCage(row, col, value));
     }
 
@@ -149,26 +121,25 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
     }
 
     private boolean validateCage(int row, int col, int value) {
-        setCellValue(row, col, value);
+        // Validate Cage
+        int sum = 0;
         KillerCage cage = getCage(row, col);
-        int sum = cage.getCurrentSum(layout);
-        System.out.println(row + "," + col + " " + sum);
+        // Loop through every position
+        for (int[] pos : cage.getPositions()) {
+            if (pos[0] == row && pos[1] == col) {
 
-
-        if (layout[row][col] == EMPTY) {
-            setCellValue(row, col, EMPTY);
-            return true;
-        }
-        else {
-            if (sum <= cage.getTotal()) {
-                setCellValue(row, col, EMPTY);
+                sum += value;
+            } else if (getCellValue(pos[0], pos[1]) == EMPTY) {
+                // The cage has an empty space
                 return true;
+            } else {
+                sum += getCellValue(pos[0], pos[1]);
             }
-            else {
-                setCellValue(row, col, EMPTY);
-                return false;
-            }
+
         }
+
+        return sum == cage.getTotal();
+
     }
 
 
@@ -192,6 +163,8 @@ public class KillerBackTrackingSolver extends KillerSudokuSolver {
         return layout[row][col];
     }
 
+
+    //TODO: testing, delete before submission
     private String printSudoku() {
         StringBuilder grid = new StringBuilder();
 

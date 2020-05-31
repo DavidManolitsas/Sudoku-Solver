@@ -99,21 +99,7 @@ public class KillerSudokuGrid extends SudokuGrid {
             values[i] = Integer.parseInt(line[i]);
         }
 
-        // find max value
-        maxValue = values[0];
-        for (int i = 1; i < values.length; i++) {
-            if (values[i] > maxValue) {
-                maxValue = values[i];
-            }
-        }
-
-        // find min value
-        minValue = values[0];
-        for (int i = 1; i < values.length; i++) {
-            if (values[i] < minValue) {
-                minValue = values[i];
-            }
-        }
+        values = selectionSort(values);
 
         // TODO: testing, delete before submission
         System.out.print("Values: ");
@@ -122,6 +108,26 @@ public class KillerSudokuGrid extends SudokuGrid {
         }
         System.out.println();
 
+    }
+
+    private int[] selectionSort(int[] values) {
+        int length = values.length;
+
+        for (int i = 0; i < length; i++) {
+            // Find the minimum element in unsorted array
+            int minIndex = i;
+            for (int j = i+1; j < length; j++)
+                if (values[j] < values[minIndex])
+                    minIndex = j;
+
+            // Swap the found minimum element with the first
+            // element
+            int temp = values[minIndex];
+            values[minIndex] = values[i];
+            values[i] = temp;
+        }
+
+        return values;
     }
 
 

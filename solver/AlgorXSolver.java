@@ -32,9 +32,7 @@ public class AlgorXSolver extends StdSudokuSolver {
 
     private void initAlgorXSolver(SudokuGrid grid) {
         this.layout = ((StdSudokuGrid) grid).getLayout();
-        this.size = ((StdSudokuGrid) grid).getRows();
-        this.minValue = ((StdSudokuGrid) grid).getMinValue();
-        this.maxValue = ((StdSudokuGrid) grid).getMaxValue();
+        this.size = ((StdSudokuGrid) grid).getSize();
         this.sectorSize = (int) Math.sqrt(size);
     }
 

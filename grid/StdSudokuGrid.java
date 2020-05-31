@@ -21,15 +21,13 @@ import java.util.Set;
  * See the comments in SudokuGrid to understand what each overriden method is
  * aiming to do (and hence what you should aim for in your implementation).
  */
-public class StdSudokuGrid extends SudokuGrid {
+public class StdSudokuGrid
+        extends SudokuGrid {
     // TODO: Add your own attributes
-    private int [][] layout;
-    private int rows;
-    private int cols;
+    private int[][] layout;
+    private int size;
     private int sectorSize;
     private int[] values;
-    private int minValue;
-    private int maxValue;
     private final int EMPTY = 0;
 
     public StdSudokuGrid() {
@@ -52,18 +50,14 @@ public class StdSudokuGrid extends SudokuGrid {
 
             if (lineCount == 1) {
                 // initialize the size of the grid
-                int size = Integer.parseInt(read.nextLine());
-                this.rows = size;
-                this.cols = size;
+                this.size = Integer.parseInt(read.nextLine());
                 this.sectorSize = (int) Math.sqrt(size);
                 layout = new int[size][size];
-            }
-            else if(lineCount == 2) {
+            } else if (lineCount == 2) {
                 // assign the smallest and largest value of the grid
                 String[] line = read.nextLine().split(" ");
                 initValues(line);
-            }
-            else if (lineCount > 2) {
+            } else if (lineCount > 2) {
                 // insert all values into the grid
                 String[] line = read.nextLine().split("\\W");
                 int row = Integer.parseInt(line[0]);
@@ -74,31 +68,15 @@ public class StdSudokuGrid extends SudokuGrid {
             }
         }
 
-        //TODO: testing
-        System.out.print(" Size of the grid is: " + rows + "x" + cols + "\nMin value: " + minValue + " Max value: " + maxValue  + ", Sectors are " + sectorSize + "x" + sectorSize + "\n");
     } // end of initBoard()
 
     private void initValues(String[] line) {
-        values = new int[rows];
+        values = new int[size];
         for (int i = 0; i < line.length; i++) {
             values[i] = Integer.parseInt(line[i]);
         }
 
-        // find max value
-        maxValue = values[0];
-        for (int i = 1; i < values.length; i++) {
-            if (values[i] > maxValue) {
-                maxValue = values[i];
-            }
-        }
-
-        // find min value
-        minValue = values[0];
-        for (int i = 1; i < values.length; i++) {
-            if (values[i] < minValue) {
-                minValue = values[i];
-            }
-        }
+        values = selectionSort(values);
 
         // TODO: testing, delete before submission
         System.out.print("Values: ");
@@ -108,12 +86,34 @@ public class StdSudokuGrid extends SudokuGrid {
 
     }
 
+    private int[] selectionSort(int[] values) {
+        int length = values.length;
+
+        for (int i = 0; i < length; i++) {
+            // Find the minimum element in unsorted array
+            int minIndex = i;
+            for (int j = i + 1; j < length; j++) {
+                if (values[j] < values[minIndex]) {
+                    minIndex = j;
+                }
+            }
+
+            // Swap the found minimum element with the first
+            // element
+            int temp = values[minIndex];
+            values[minIndex] = values[i];
+            values[i] = temp;
+        }
+
+        return values;
+    }
+
 
     @Override
     public void outputGrid(String filename) throws FileNotFoundException, IOException {
-            PrintWriter printWriter = new PrintWriter(filename);
-            printWriter.print(toString());
-            printWriter.close();
+        PrintWriter printWriter = new PrintWriter(filename);
+        printWriter.print(toString());
+        printWriter.close();
 
     } // end of outputBoard()
 
@@ -127,7 +127,7 @@ public class StdSudokuGrid extends SudokuGrid {
         for (int[] row : layout) {
             for (int value : row) {
                 count++;
-                if (count == cols) {
+                if (count == size) {
                     grid.append(value);
                 } else {
                     grid.append(value).append(",");
@@ -143,27 +143,28 @@ public class StdSudokuGrid extends SudokuGrid {
 
     @Override
     public boolean validate() {
-        for(int i = 0; i < rows; i++) {
+        for (int i = 0; i < size; i++) {
             Set<Integer> rowSet = new HashSet<>();
             Set<Integer> colSet = new HashSet<>();
             Set<Integer> sectorSet = new HashSet<>();
 
-            for(int j = 0; j < cols; j++) {
+            for (int j = 0; j < size; j++) {
                 // Base case, check if the value is in the appropriate range
-                if(layout[i][j] < minValue || layout[i][j] > maxValue) {
+                if (layout[i][j] < values[0] || layout[i][j] > values[values.length - 1]) {
                     return false;
                 }
                 // check if the value layout[i][j] is in a Row Set
-                if(layout[i][j] == EMPTY && !rowSet.add(layout[i][j])) {
+                if (layout[i][j] == EMPTY && !rowSet.add(layout[i][j])) {
                     return false;
                 }
                 // check if the value layout[i][j] is in a Column Set
-                if(layout[j][i] == EMPTY && !colSet.add(layout[j][i])) {
+                if (layout[j][i] == EMPTY && !colSet.add(layout[j][i])) {
                     return false;
                 }
-                int rowIndex = sectorSize * (i/sectorSize);
+                int rowIndex = sectorSize * (i / sectorSize);
                 int colIndex = sectorSize * (i % sectorSize);
-                if(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize] != EMPTY && !sectorSet.add(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize])) {
+                if (layout[rowIndex + j / sectorSize][colIndex + j % sectorSize] != EMPTY &&
+                        !sectorSet.add(layout[rowIndex + j / sectorSize][colIndex + j % sectorSize])) {
                     return false;
                 }
 
@@ -183,21 +184,28 @@ public class StdSudokuGrid extends SudokuGrid {
         this.layout = layout;
     }
 
-    public int getMinValue() {
-        return minValue;
+
+    public int getSectorSize() {
+        return sectorSize;
     }
 
-    public int getMaxValue() {
-        return maxValue;
+    public void setSectorSize(int sectorSize) {
+        this.sectorSize = sectorSize;
     }
 
-    public int getRows() {
-        return rows;
+    public int[] getValues() {
+        return values;
     }
 
-    public int getCols() {
-        return cols;
+    public void setValues(int[] values) {
+        this.values = values;
     }
 
+    public int getSize() {
+        return size;
+    }
 
+    public void setSize(int size) {
+        this.size = size;
+    }
 } // end of class StdSudokuGrid

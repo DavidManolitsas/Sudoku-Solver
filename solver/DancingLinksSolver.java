@@ -24,9 +24,8 @@ public class DancingLinksSolver extends StdSudokuSolver {
     private int[][] layout;
     private int size;
     private final int EMPTY = 0;
-    private int minValue;
-    private int maxValue;
     private int sectorSize;
+    private int[] values;
     //Cover Board
     private int[][] coverBoard;
     private final int COVER_START_INDEX = 1;
@@ -41,9 +40,8 @@ public class DancingLinksSolver extends StdSudokuSolver {
 
     private void initDancingLinkSolver(SudokuGrid grid) {
         this.layout = ((StdSudokuGrid) grid).getLayout();
-        this.size = ((StdSudokuGrid) grid).getRows();
-        this.minValue = ((StdSudokuGrid) grid).getMinValue();
-        this.maxValue = ((StdSudokuGrid) grid).getMaxValue();
+        this.size = ((StdSudokuGrid) grid).getSize();
+        this.values = ((StdSudokuGrid) grid).getValues();
         this.sectorSize = (int) Math.sqrt(size);
     }
 
@@ -72,7 +70,7 @@ public class DancingLinksSolver extends StdSudokuSolver {
 
     //region create cover board
     private int[][] createCoverBoard() {
-        int[][] coverBoard = new int [size * size * maxValue][size * size * 4];
+        int[][] coverBoard = new int [size * size * size][size * size * 4];
 
         int head  = 0;
         head = createCellConstraints(coverBoard, head);
@@ -150,7 +148,7 @@ public class DancingLinksSolver extends StdSudokuSolver {
                 int num = layout[row - 1][col - 1];
 
                 if (num != EMPTY) {
-                    for (int value = minValue; value <= maxValue; value++) {
+                    for (int value : values) {
                         if (value != num) {
                             Arrays.fill(coverBoard[getIndex(row, col, value)], 0);
                         }
@@ -175,7 +173,6 @@ public class DancingLinksSolver extends StdSudokuSolver {
 
     private void search(int key) {
         if (head.getRight() == head) {
-            //
             setSolution(answer);
         } else {
             ColumnNode col = selectColumnNodeHeuristic();

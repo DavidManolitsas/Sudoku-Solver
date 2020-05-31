@@ -15,8 +15,7 @@ public class BackTrackingSolver extends StdSudokuSolver {
     private int size;
     private int[][] layout;
     private final int EMPTY = 0;
-    private int minValue;
-    private int maxValue;
+    private int[] values;
     private int sectorSize;
 
     public BackTrackingSolver() {
@@ -25,9 +24,8 @@ public class BackTrackingSolver extends StdSudokuSolver {
 
     private void initBackTrackingSolver(SudokuGrid grid) {
         this.layout = ((StdSudokuGrid) grid).getLayout();
-        this.size = ((StdSudokuGrid) grid).getRows();
-        this.minValue = ((StdSudokuGrid) grid).getMinValue();
-        this.maxValue = ((StdSudokuGrid) grid).getMaxValue();
+        this.size = ((StdSudokuGrid) grid).getSize();
+        this.values = ((StdSudokuGrid) grid).getValues();
         this.sectorSize = (int) Math.sqrt(size);
     }
 
@@ -37,54 +35,36 @@ public class BackTrackingSolver extends StdSudokuSolver {
             initBackTrackingSolver(grid);
         }
 
-        solve();
-        ((StdSudokuGrid) grid).setLayout(layout);
-        return grid.validate();
+        // Iterate through the grid
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                // Check if the position is empty
+                if (getCellValue(row, col) == EMPTY) {
+
+                    //  Cycle through each potential value
+                    for (int inputValue : values) {
+                        // Check if the input value is valid
+                        if (isValid(row, col, inputValue)) {
+                            // if input value is valid, set input value to the layout
+                            setCellValue(row, col, inputValue);
+                            // Recurse
+                            if (solve(grid)) {
+                                return true;
+                            } else {
+                                // if it is an invalid position set the current position back to empty
+                                setCellValue(row, col, EMPTY);
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+
+        return true;
 
     } // end of solve()
 
-
-    public boolean solve() {
-        int row = -1;
-        int col = -1;
-        boolean isEmpty = true;
-
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (layout[i][j] == EMPTY) {
-                    row = i;
-                    col = j;
-
-                    // we still have some remaining missing values in Sudoku
-                    isEmpty = false;
-                    break;
-                }
-            }
-            if (!isEmpty) {
-                break;
-            }
-        }
-
-        // no empty space left
-        if (isEmpty) {
-            return true;
-        }
-
-        // else for each-row backtrack
-        for (int value = 1; value <= size; value++) {
-            if (isValid(row, col, value)) {
-                setCellValue(row, col, value);
-                if (solve()) {
-                    return true;
-                }
-                else {
-                    // replace it
-                    setCellValue(row, col, EMPTY);
-                }
-            }
-        }
-        return false;
-    }
 
     public boolean isValid(int row, int col, int value) {
         return (validateRow(row, value) && validateColumn(col, value) && validateSector(row, col, value));
@@ -103,7 +83,7 @@ public class BackTrackingSolver extends StdSudokuSolver {
 
     private boolean validateColumn(int col, int value) {
         // Validate column
-        for (int row = 0; row < layout.length; row++) {
+        for (int row = 0; row < size; row++) {
             // if the number we are trying to place is already present in that column, return false;
             if (getCellValue(row, col) == value) {
                 return false;
@@ -219,11 +199,6 @@ public class BackTrackingSolver extends StdSudokuSolver {
      *     }
      */
 
-    // For Testing
-    @Override
-    public String toString() {
-        return "size: " + size + "x" +size + ", Min Value: " + minValue + ", Max Value: " + maxValue + ", Sector Size: " + sectorSize + "x" + sectorSize;
-    }
 
 
 

@@ -43,6 +43,17 @@ public class KillerCage {
         return sum;
     }
 
+    public boolean isFull(int[][]layout, int row, int col, int value) {
+        layout[row][col] = value;
+
+        for (int[] pos : positions) {
+            if (layout[pos[0]][pos[1]] == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     //TODO: this is for testing, delete before submission
     @Override
     public String toString() {
