@@ -23,7 +23,7 @@ import java.util.Set;
  */
 public class StdSudokuGrid
         extends SudokuGrid {
-    // TODO: Add your own attributes
+
     private int[][] layout;
     private int size;
     private int sectorSize;
@@ -32,7 +32,7 @@ public class StdSudokuGrid
 
     public StdSudokuGrid() {
         super();
-        // TODO: any necessary initialisation at the constructor
+
     } // end of StdSudokuGrid()
 
 

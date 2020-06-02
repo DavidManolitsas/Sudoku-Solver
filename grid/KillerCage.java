@@ -11,7 +11,7 @@ import java.util.List;
 public class KillerCage {
 
     private int total;
-    List<int[]> positions;
+    private List<int[]> positions;
 
     public KillerCage() {
         positions = new ArrayList<int[]>();
@@ -29,32 +29,8 @@ public class KillerCage {
         return positions;
     }
 
-    public void setPositions(List<int[]> positions) {
-        this.positions = positions;
-    }
 
-    public int getCurrentSum(int[][] layout) {
-        int sum = 0;
-        for(int[] rowCol : positions) {
-            int value = layout[rowCol[0]][rowCol[1]];
-            sum += value;
-        }
-
-        return sum;
-    }
-
-    public boolean isFull(int[][]layout, int row, int col, int value) {
-        layout[row][col] = value;
-
-        for (int[] pos : positions) {
-            if (layout[pos[0]][pos[1]] == 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    //TODO: this is for testing, delete before submission
+    //TODO: testing, delete before submission
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder();

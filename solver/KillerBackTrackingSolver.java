@@ -39,8 +39,7 @@ public class KillerBackTrackingSolver
 
     @Override
     public boolean solve(SudokuGrid grid) {
-
-        // TODO: your implementation of a backtracking solver for Killer Sudoku.
+        // initialise the variables of the sudoku grid
         if (layout == null) {
             initVariables(grid);
         }
@@ -127,7 +126,7 @@ public class KillerBackTrackingSolver
         // Loop through every position
         for (int[] pos : cage.getPositions()) {
             if (pos[0] == row && pos[1] == col) {
-
+                // increment sum
                 sum += value;
             } else if (getCellValue(pos[0], pos[1]) == EMPTY) {
                 // The cage has an empty space

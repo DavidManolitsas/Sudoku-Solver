@@ -10,8 +10,7 @@ import grid.SudokuGrid;
 /**
  * Your advanced solver for Killer Sudoku.
  */
-public class KillerAdvancedSolver extends KillerSudokuSolver
-{
+public class KillerAdvancedSolver extends KillerSudokuSolver {
     // TODO: Add attributes as needed.
 
     public KillerAdvancedSolver() {

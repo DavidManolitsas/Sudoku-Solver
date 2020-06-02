@@ -24,7 +24,7 @@ import java.util.Set;
  * aiming to do (and hence what you should aim for in your implementation).
  */
 public class KillerSudokuGrid extends SudokuGrid {
-    // TODO: Add your own attributes
+
     private int[][] layout;
     private final int EMPTY = 0;
     private List<KillerCage> cages;
@@ -38,7 +38,6 @@ public class KillerSudokuGrid extends SudokuGrid {
     public KillerSudokuGrid() {
         super();
 
-        // TODO: any necessary initialisation at the constructor
     } // end of KillerSudokuGrid()
 
 
