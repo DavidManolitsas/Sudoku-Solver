@@ -100,13 +100,6 @@ public class KillerSudokuGrid extends SudokuGrid {
 
         values = selectionSort(values);
 
-        // TODO: testing, delete before submission
-        System.out.print("Values: ");
-        for (int val : values) {
-            System.out.print(val + " ");
-        }
-        System.out.println();
-
     }
 
     private int[] selectionSort(int[] values) {
@@ -163,12 +156,14 @@ public class KillerSudokuGrid extends SudokuGrid {
 
     @Override
     public boolean validate() {
+        // Validate each cage adds up to the target sum
         for (KillerCage cage : cages) {
             if(!validateCage(cage)) {
                 return false;
             }
         }
 
+        // Validate the sudoku grid
         for(int i = 0; i < size; i++) {
             Set<Integer> rowSet = new HashSet<>();
             Set<Integer> colSet = new HashSet<>();
@@ -179,17 +174,19 @@ public class KillerSudokuGrid extends SudokuGrid {
                 if(layout[i][j] < minValue || layout[i][j] > maxValue) {
                     return false;
                 }
-                // check if the value layout[i][j] is in a Row Set
+                // Check if the value layout[i][j] can be added to the Row Set
                 if(layout[i][j] == EMPTY && !rowSet.add(layout[i][j])) {
                     return false;
                 }
-                // check if the value layout[i][j] is in a Column Set
+                // Check if the value layout[i][j] can be added to the Column Set
                 if(layout[j][i] == EMPTY && !colSet.add(layout[j][i])) {
                     return false;
                 }
                 int rowIndex = sectorSize * (i/sectorSize);
                 int colIndex = sectorSize * (i % sectorSize);
-                if(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize] != EMPTY && !sectorSet.add(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize])) {
+                // Check if the value layout[i][j] can be added to the Sector Set
+                if(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize] != EMPTY &&
+                        !sectorSet.add(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize])) {
                     return false;
                 }
 
@@ -201,7 +198,7 @@ public class KillerSudokuGrid extends SudokuGrid {
     } // end of validate()
 
     /**
-     * Validate if the cage values equal the correct cage total
+     * Check if the sum of all values in the cage add to the target Total of the cage
      * @param cage the cage that is being validated
      * @return true if the values in the cage equal the cage total, otherwise return false
      */

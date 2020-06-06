@@ -175,7 +175,7 @@ public class DancingLinksSolver extends StdSudokuSolver {
         if (head.getRight() == head) {
             setSolution(answer);
         } else {
-            ColumnNode col = selectColumnNodeHeuristic();
+            ColumnNode col = findMinCol();
             col.cover();
 
             for (DancingNode row = col.getDown(); row != col; row = row.getDown()) {
@@ -199,16 +199,16 @@ public class DancingLinksSolver extends StdSudokuSolver {
         }
     }
 
-    private ColumnNode selectColumnNodeHeuristic() {
+    private ColumnNode findMinCol() {
         int min = Integer.MAX_VALUE;
-        ColumnNode ret = null;
+        ColumnNode colNode = null;
         for (ColumnNode col = (ColumnNode) head.getRight(); col != head; col = (ColumnNode) col.getRight()) {
             if (col.getSize() < min) {
                 min = col.getSize();
-                ret = col;
+                colNode = col;
             }
         }
-        return ret;
+        return colNode;
     }
 
     private ColumnNode makeDLXBoard(int[][] layout) {

@@ -78,12 +78,6 @@ public class StdSudokuGrid
 
         values = selectionSort(values);
 
-        // TODO: testing, delete before submission
-        System.out.print("Values: ");
-        for (int val : values) {
-            System.out.print(val + " ");
-        }
-
     }
 
     private int[] selectionSort(int[] values) {
@@ -143,6 +137,7 @@ public class StdSudokuGrid
 
     @Override
     public boolean validate() {
+        // Validate the sudoku grid
         for (int i = 0; i < size; i++) {
             Set<Integer> rowSet = new HashSet<>();
             Set<Integer> colSet = new HashSet<>();
@@ -153,21 +148,21 @@ public class StdSudokuGrid
                 if (layout[i][j] < values[0] || layout[i][j] > values[values.length - 1]) {
                     return false;
                 }
-                // check if the value layout[i][j] is in a Row Set
-                if (layout[i][j] == EMPTY && !rowSet.add(layout[i][j])) {
+                // Check if the value layout[i][j] can be added to the Row Set
+                if(layout[i][j] == EMPTY && !rowSet.add(layout[i][j])) {
                     return false;
                 }
-                // check if the value layout[i][j] is in a Column Set
-                if (layout[j][i] == EMPTY && !colSet.add(layout[j][i])) {
+                // Check if the value layout[i][j] can be added to the Column Set
+                if(layout[j][i] == EMPTY && !colSet.add(layout[j][i])) {
                     return false;
                 }
-                int rowIndex = sectorSize * (i / sectorSize);
+                int rowIndex = sectorSize * (i/sectorSize);
                 int colIndex = sectorSize * (i % sectorSize);
-                if (layout[rowIndex + j / sectorSize][colIndex + j % sectorSize] != EMPTY &&
-                        !sectorSet.add(layout[rowIndex + j / sectorSize][colIndex + j % sectorSize])) {
+                // Check if the value layout[i][j] can be added to the Sector Set
+                if(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize] != EMPTY &&
+                        !sectorSet.add(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize])) {
                     return false;
                 }
-
             }
         }
 
@@ -183,7 +178,6 @@ public class StdSudokuGrid
     public void setLayout(int[][] layout) {
         this.layout = layout;
     }
-
 
     public int getSectorSize() {
         return sectorSize;
@@ -208,4 +202,5 @@ public class StdSudokuGrid
     public void setSize(int size) {
         this.size = size;
     }
+
 } // end of class StdSudokuGrid
