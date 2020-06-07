@@ -15,7 +15,8 @@ import grid.SudokuGrid;
 /**
  * Algorithm X solver for standard Sudoku.
  */
-public class AlgorXSolver extends StdSudokuSolver {
+public class AlgorXSolver
+        extends StdSudokuSolver {
 
     // Sudoku Grid details
     private int[][] layout;
@@ -68,19 +69,22 @@ public class AlgorXSolver extends StdSudokuSolver {
 
     /**
      * The following method is based off the sudo code below, derived from Donald Knuth’s Algorithm X:
-     *
+     * <p>
      * 1. If the matrix A has no columns, the current partial solution is a valid solution; terminate successfully.
      * 2. Otherwise, choose a column c (deterministically).
      * 3. Choose a row r such that A[r] = 1 (non-deterministically).
      * 4. Include row r in the partial solution.
      * 5. For each column j such that A[r][j] = 1,
-     *        for each row i such that A[i][j] = 1,
-     *            delete row i from matrix A.
-     *        delete column j from matrix A.
+     * for each row i such that A[i][j] = 1,
+     * delete row i from matrix A.
+     * delete column j from matrix A.
      * 6. Repeat this algorithm recursively on the reduced matrix A.
      *
-     * @param coverBoard exact cover board used to solve the sudoku as an exact cover problem
-     * @param columns a list of column indexs in the exact cover grid
+     * @param coverBoard
+     *         exact cover board used to solve the sudoku as an exact cover problem
+     * @param columns
+     *         a list of column indexs in the exact cover grid
+     *
      * @return true/false depending on if the sudoku is solved
      */
     public boolean solve(int[][] coverBoard, ArrayList<Integer> columns) {
@@ -90,13 +94,12 @@ public class AlgorXSolver extends StdSudokuSolver {
         }
 
         int col = findMinCol(coverBoard, columns);
-
         for (int row = 0; row < coverBoard.length; row++) {
             if (coverBoard[row][col] == 1) {
                 partialSolution.push(row);
 
                 List<Integer> removedCols = new ArrayList<Integer>();
-                for(int c = 0; c < coverBoard[0].length; c++) {
+                for (int c = 0; c < coverBoard[0].length; c++) {
                     if (coverBoard[row][c] == 1) {
                         removedCols.add(c);
                     }
@@ -148,17 +151,17 @@ public class AlgorXSolver extends StdSudokuSolver {
 
 
     private void uncover(int[][] coverBoard, List<int[]> cover) {
-        for(int[] rowCol : cover) {
+        for (int[] rowCol : cover) {
             coverBoard[rowCol[0]][rowCol[1]] = 1;
         }
     }
 
 
-    public int findMinCol(int[][] coverBoard,  ArrayList<Integer> columns) {
+    public int findMinCol(int[][] coverBoard, ArrayList<Integer> columns) {
         int min = Integer.MAX_VALUE;
         int chosenCol = -1;
 
-            for (Integer col : columns) {
+        for (Integer col : columns) {
             int count = 0;
             for (int row = 0; row < coverBoard.length; row++) {
 
@@ -177,9 +180,9 @@ public class AlgorXSolver extends StdSudokuSolver {
 
     //region create cover board
     private int[][] createCoverBoard() {
-        int[][] coverBoard = new int [size * size * size][size * size * 4];
+        int[][] coverBoard = new int[size * size * size][size * size * 4];
 
-        int head  = 0;
+        int head = 0;
         head = createCellConstraints(coverBoard, head);
         head = createRowConstraints(coverBoard, head);
         head = createColumnConstraints(coverBoard, head);
@@ -191,10 +194,10 @@ public class AlgorXSolver extends StdSudokuSolver {
     private int createBoxConstraints(int[][] coverBoard, int head) {
         for (int row = COVER_START_INDEX; row <= size; row += sectorSize) {
             for (int col = COVER_START_INDEX; col <= size; col += sectorSize) {
-                for (int value = COVER_START_INDEX; value <= size; value++, head++) {
+                for (int valueIndex = 0; valueIndex < values.length; valueIndex++, head++) {
                     for (int rowDelta = 0; rowDelta < sectorSize; rowDelta++) {
                         for (int colDelta = 0; colDelta < sectorSize; colDelta++) {
-                            int index = getIndex(row + rowDelta, col + colDelta, value);
+                            int index = getIndex(row + rowDelta, col + colDelta, valueIndex);
                             coverBoard[index][head] = 1;
                         }
                     }
@@ -207,9 +210,9 @@ public class AlgorXSolver extends StdSudokuSolver {
 
     private int createColumnConstraints(int[][] coverBoard, int head) {
         for (int col = COVER_START_INDEX; col <= size; col++) {
-            for (int value = COVER_START_INDEX; value <= size; value++, head++) {
+            for (int valueIndex = 0; valueIndex < values.length; valueIndex++, head++) {
                 for (int row = COVER_START_INDEX; row <= size; row++) {
-                    int index = getIndex(row, col, value);
+                    int index = getIndex(row, col, valueIndex);
                     coverBoard[index][head] = 1;
                 }
             }
@@ -221,9 +224,9 @@ public class AlgorXSolver extends StdSudokuSolver {
 
     private int createRowConstraints(int[][] coverBoard, int head) {
         for (int row = COVER_START_INDEX; row <= size; row++) {
-            for (int value = COVER_START_INDEX; value <= size; value++, head++) {
+            for (int valueIndex = 0; valueIndex < values.length; valueIndex++, head++) {
                 for (int col = COVER_START_INDEX; col <= size; col++) {
-                    int index = getIndex(row, col, value);
+                    int index = getIndex(row, col, valueIndex);
                     coverBoard[index][head] = 1;
                 }
             }
@@ -235,8 +238,8 @@ public class AlgorXSolver extends StdSudokuSolver {
     private int createCellConstraints(int[][] coverBoard, int head) {
         for (int row = COVER_START_INDEX; row <= size; row++) {
             for (int col = COVER_START_INDEX; col <= size; col++, head++) {
-                for (int value = COVER_START_INDEX; value <= size; value++) {
-                    int index = getIndex(row, col, value);
+                for (int valueIndex = 0; valueIndex < values.length; valueIndex++) {
+                    int index = getIndex(row, col, valueIndex);
                     coverBoard[index][head] = 1;
                 }
             }
@@ -256,9 +259,9 @@ public class AlgorXSolver extends StdSudokuSolver {
                 int num = layout[row - 1][col - 1];
 
                 if (num != EMPTY) {
-                    for (int value : values) {
-                        if (value != num) {
-                            Arrays.fill(coverBoard[getIndex(row, col, value)], 0);
+                    for (int valueIndex = 0; valueIndex < values.length; valueIndex++) {
+                        if (values[valueIndex] != num) {
+                            Arrays.fill(coverBoard[getIndex(row, col, valueIndex)], 0);
                         }
                     }
                 }
@@ -269,8 +272,8 @@ public class AlgorXSolver extends StdSudokuSolver {
     }
 
 
-    private int getIndex(int row, int column, int value) {
-        return (row - 1) * size * size + (column - 1) * size + (value - 1);
+    private int getIndex(int row, int column, int valueIndex) {
+        return (row - 1) * size * size + (column - 1) * size + valueIndex;
     }
     //endregion
 
@@ -280,7 +283,7 @@ public class AlgorXSolver extends StdSudokuSolver {
         for (Integer index : partialSolution) {
             int row = index / (size * size);
             int col = (index / size) % size;
-            int value = index % size + 1;
+            int value = values[index % size];
             solution[row][col] = value;
         }
 
@@ -290,8 +293,8 @@ public class AlgorXSolver extends StdSudokuSolver {
     //TODO: for testing
     public void printCoverBoard() {
         System.out.println("\nExact Cover Board:");
-        for(int i = 0; i < coverBoard.length; i++) {
-            for (int j = 0; j < coverBoard.length; j++) {
+        for (int i = 0; i < coverBoard.length; i++) {
+            for (int j = 0; j < coverBoard[0].length; j++) {
                 System.out.print(coverBoard[i][j] + " ");
             }
 

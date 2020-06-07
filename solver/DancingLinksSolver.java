@@ -67,104 +67,6 @@ public class DancingLinksSolver extends StdSudokuSolver {
         this.head = makeDLXBoard(coverBoard);
     }
 
-
-    //region create cover board
-    private int[][] createCoverBoard() {
-        int[][] coverBoard = new int [size * size * size][size * size * 4];
-
-        int head  = 0;
-        head = createCellConstraints(coverBoard, head);
-        head = createRowConstraints(coverBoard, head);
-        head = createColumnConstraints(coverBoard, head);
-        createBoxConstraints(coverBoard, head);
-
-        return coverBoard;
-    }
-
-    private int createBoxConstraints(int[][] coverBoard, int head) {
-        for (int row = COVER_START_INDEX; row <= size; row += sectorSize) {
-            for (int col = COVER_START_INDEX; col <= size; col += sectorSize) {
-                for (int value = COVER_START_INDEX; value <= size; value++, head++) {
-                    for (int rowDelta = 0; rowDelta < sectorSize; rowDelta++) {
-                        for (int colDelta = 0; colDelta < sectorSize; colDelta++) {
-                            int index = getIndex(row + rowDelta, col + colDelta, value);
-                            coverBoard[index][head] = 1;
-                        }
-                    }
-                }
-            }
-        }
-
-        return head;
-    }
-
-    private int createColumnConstraints(int[][] coverBoard, int head) {
-        for (int col = COVER_START_INDEX; col <= size; col++) {
-            for (int value = COVER_START_INDEX; value <= size; value++, head++) {
-                for (int row = COVER_START_INDEX; row <= size; row++) {
-                    int index = getIndex(row, col, value);
-                    coverBoard[index][head] = 1;
-                }
-            }
-        }
-
-        return head;
-    }
-
-
-    private int createRowConstraints(int[][] coverBoard, int head) {
-        for (int row = COVER_START_INDEX; row <= size; row++) {
-            for (int value = COVER_START_INDEX; value <= size; value++, head++) {
-                for (int col = COVER_START_INDEX; col <= size; col++) {
-                    int index = getIndex(row, col, value);
-                    coverBoard[index][head] = 1;
-                }
-            }
-        }
-
-        return head;
-    }
-
-    private int createCellConstraints(int[][] coverBoard, int head) {
-        for (int row = COVER_START_INDEX; row <= size; row++) {
-            for (int col = COVER_START_INDEX; col <= size; col++, head++) {
-                for (int value = COVER_START_INDEX; value <= size; value++) {
-                    int index = getIndex(row, col, value);
-                    coverBoard[index][head] = 1;
-                }
-            }
-        }
-
-        return head;
-    }
-
-    private int[][] initCoverBoard(int[][] layout) {
-
-        int[][] coverBoard = createCoverBoard();
-
-        // Taking into account the values already entered in Sudoku's grid instance
-        for (int row = COVER_START_INDEX; row <= size; row++) {
-            for (int col = COVER_START_INDEX; col <= size; col++) {
-                int num = layout[row - 1][col - 1];
-
-                if (num != EMPTY) {
-                    for (int value : values) {
-                        if (value != num) {
-                            Arrays.fill(coverBoard[getIndex(row, col, value)], 0);
-                        }
-                    }
-                }
-            }
-        }
-
-        return coverBoard;
-    }
-
-    private int getIndex(int row, int column, int value) {
-        return (row - 1) * size * size + (column - 1) * size + (value - 1);
-    }
-    //endregion
-
     //region start solve sudoku
     public void solve() {
         answer = new LinkedList<DancingNode>();
@@ -248,6 +150,106 @@ public class DancingLinksSolver extends StdSudokuSolver {
 
         return headNode;
     }
+    //endregion
+
+    //region create cover board
+    private int[][] createCoverBoard() {
+        int[][] coverBoard = new int[size * size * size][size * size * 4];
+
+        int head = 0;
+        head = createCellConstraints(coverBoard, head);
+        head = createRowConstraints(coverBoard, head);
+        head = createColumnConstraints(coverBoard, head);
+        createBoxConstraints(coverBoard, head);
+
+        return coverBoard;
+    }
+
+    private int createBoxConstraints(int[][] coverBoard, int head) {
+        for (int row = COVER_START_INDEX; row <= size; row += sectorSize) {
+            for (int col = COVER_START_INDEX; col <= size; col += sectorSize) {
+                for (int valueIndex = 0; valueIndex < values.length; valueIndex++, head++) {
+                    for (int rowDelta = 0; rowDelta < sectorSize; rowDelta++) {
+                        for (int colDelta = 0; colDelta < sectorSize; colDelta++) {
+                            int index = getIndex(row + rowDelta, col + colDelta, valueIndex);
+                            coverBoard[index][head] = 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        return head;
+    }
+
+    private int createColumnConstraints(int[][] coverBoard, int head) {
+        for (int col = COVER_START_INDEX; col <= size; col++) {
+            for (int valueIndex = 0; valueIndex < values.length; valueIndex++, head++) {
+                for (int row = COVER_START_INDEX; row <= size; row++) {
+                    int index = getIndex(row, col, valueIndex);
+                    coverBoard[index][head] = 1;
+                }
+            }
+        }
+
+        return head;
+    }
+
+
+    private int createRowConstraints(int[][] coverBoard, int head) {
+        for (int row = COVER_START_INDEX; row <= size; row++) {
+            for (int valueIndex = 0; valueIndex < values.length; valueIndex++, head++) {
+                for (int col = COVER_START_INDEX; col <= size; col++) {
+                    int index = getIndex(row, col, valueIndex);
+                    coverBoard[index][head] = 1;
+                }
+            }
+        }
+
+        return head;
+    }
+
+    private int createCellConstraints(int[][] coverBoard, int head) {
+        for (int row = COVER_START_INDEX; row <= size; row++) {
+            for (int col = COVER_START_INDEX; col <= size; col++, head++) {
+                for (int valueIndex = 0; valueIndex < values.length; valueIndex++) {
+                    int index = getIndex(row, col, valueIndex);
+                    coverBoard[index][head] = 1;
+                }
+            }
+        }
+
+        return head;
+    }
+
+
+    private int[][] initCoverBoard(int[][] layout) {
+
+        int[][] coverBoard = createCoverBoard();
+
+        // Taking into account the values already entered in Sudoku's grid instance
+        for (int row = COVER_START_INDEX; row <= size; row++) {
+            for (int col = COVER_START_INDEX; col <= size; col++) {
+                int num = layout[row - 1][col - 1];
+
+                if (num != EMPTY) {
+                    for (int valueIndex = 0; valueIndex < values.length; valueIndex++) {
+                        if (values[valueIndex] != num) {
+                            Arrays.fill(coverBoard[getIndex(row, col, valueIndex)], 0);
+                        }
+                    }
+                }
+            }
+        }
+
+        return coverBoard;
+    }
+
+
+    private int getIndex(int row, int column, int valueIndex) {
+        return (row - 1) * size * size + (column - 1) * size + valueIndex;
+    }
+    //endregion
 
     private int[][] convertToSudokuBoard(List<DancingNode> answer) {
         int[][] solution = new int[size][size];
@@ -268,13 +270,12 @@ public class DancingLinksSolver extends StdSudokuSolver {
             int ans2 = Integer.parseInt(rowColNode.getRight().getColNode().getName());
             int row = ans1 / size;
             int col = ans1 % size;
-            int value = (ans2 % size) + 1;
+            int value = values[ans2 % size];
             solution[row][col] = value;
         }
 
         return solution;
     }
-    //endregion
 
     private void setSolution(List<DancingNode> answer) {
         solution = convertToSudokuBoard(answer);
