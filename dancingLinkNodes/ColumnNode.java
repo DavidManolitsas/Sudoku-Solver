@@ -21,7 +21,7 @@ public class ColumnNode extends DancingNode {
         removeLeftRight();
 
         for (DancingNode i = down; i != this; i = i.down) {
-            for (DancingNode j = i.getRight; j != i; j = j.getRight) {
+            for (DancingNode j = i.right; j != i; j = j.right) {
                 j.removeTopBottom();
                 j.colNode.size--;
             }
@@ -49,10 +49,6 @@ public class ColumnNode extends DancingNode {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void incrementSize() {

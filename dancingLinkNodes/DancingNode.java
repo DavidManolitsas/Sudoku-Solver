@@ -6,12 +6,12 @@ package dancingLinkNodes;
  * @date 2020-05-26
  */
 public class DancingNode {
-    protected DancingNode left, getRight, up, down;
+    protected DancingNode left, right, up, down;
     protected ColumnNode colNode;
 
     public DancingNode() {
         this.left = this;
-        this.getRight = this;
+        this.right = this;
         this.up = this;
         this.down = this;
     }
@@ -31,21 +31,21 @@ public class DancingNode {
     }
 
     public DancingNode linkRight(DancingNode node) {
-        node.getRight = getRight;
-        node.getRight.left = node;
+        node.right = right;
+        node.right.left = node;
         node.left = this;
-        getRight = node;
+        right = node;
         return node;
     }
 
     public void removeLeftRight() {
-        left.getRight = getRight;
-        getRight.left = left;
+        left.right = right;
+        right.left = left;
     }
 
     public void reinsertLeftRight() {
-        left.getRight = this;
-        getRight.left = this;
+        left.right = this;
+        right.left = this;
     }
 
     public void removeTopBottom() {
@@ -62,16 +62,8 @@ public class DancingNode {
         return left;
     }
 
-    public void setLeft(DancingNode left) {
-        this.left = left;
-    }
-
     public DancingNode getRight() {
-        return getRight;
-    }
-
-    public void setRight(DancingNode right) {
-        this.getRight = right;
+        return right;
     }
 
     public DancingNode getUp() {
@@ -86,15 +78,8 @@ public class DancingNode {
         return down;
     }
 
-    public void setDown(DancingNode down) {
-        this.down = down;
-    }
-
     public ColumnNode getColNode() {
         return colNode;
     }
 
-    public void setColNode(ColumnNode colNode) {
-        this.colNode = colNode;
-    }
 }

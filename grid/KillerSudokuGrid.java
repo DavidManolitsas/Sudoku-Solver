@@ -31,8 +31,8 @@ public class KillerSudokuGrid extends SudokuGrid {
     private int size;
     private int sectorSize;
     private int[] values;
-    private int minValue;
-    private int maxValue;
+//    private int minValue;
+//    private int maxValue;
     private int cageCount;
 
     public KillerSudokuGrid() {
@@ -168,7 +168,7 @@ public class KillerSudokuGrid extends SudokuGrid {
 
             for(int j = 0; j < size; j++) {
                 // Base case, check if the value is in the appropriate range
-                if(layout[i][j] < minValue || layout[i][j] > maxValue) {
+                if(layout[i][j] < values[0] || layout[i][j] > values[size - 1]) {
                     return false;
                 }
                 // Check if the value layout[i][j] can be added to the Row Set
@@ -182,8 +182,7 @@ public class KillerSudokuGrid extends SudokuGrid {
                 int rowIndex = sectorSize * (i/sectorSize);
                 int colIndex = sectorSize * (i % sectorSize);
                 // Check if the value layout[i][j] can be added to the Sector Set
-                if(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize] != EMPTY &&
-                        !sectorSet.add(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize])) {
+                if(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize] != EMPTY && !sectorSet.add(layout[rowIndex + j/sectorSize][colIndex + j % sectorSize])) {
                     return false;
                 }
 
@@ -214,63 +213,16 @@ public class KillerSudokuGrid extends SudokuGrid {
         return layout;
     }
 
-    public void setLayout(int[][] layout) {
-        this.layout = layout;
-    }
-
     public List<KillerCage> getCages() {
         return cages;
-    }
-
-    public void setCages(List<KillerCage> cages) {
-        this.cages = cages;
     }
 
     public int getSize() {
         return size;
     }
 
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public int getSectorSize() {
-        return sectorSize;
-    }
-
-    public void setSectorSize(int sectorSize) {
-        this.sectorSize = sectorSize;
-    }
-
     public int[] getValues() {
         return values;
     }
 
-    public void setValues(int[] values) {
-        this.values = values;
-    }
-
-    public int getMinValue() {
-        return minValue;
-    }
-
-    public void setMinValue(int minValue) {
-        this.minValue = minValue;
-    }
-
-    public int getMaxValue() {
-        return maxValue;
-    }
-
-    public void setMaxValue(int maxValue) {
-        this.maxValue = maxValue;
-    }
-
-    public int getCageCount() {
-        return cageCount;
-    }
-
-    public void setCageCount(int cageCount) {
-        this.cageCount = cageCount;
-    }
 } // end of class KillerSudokuGrid

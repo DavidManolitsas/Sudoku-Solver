@@ -142,7 +142,7 @@ public class StdSudokuGrid
 
             for (int j = 0; j < size; j++) {
                 // Base case, check if the value is in the appropriate range
-                if (layout[i][j] < values[0] || layout[i][j] > values[values.length - 1]) {
+                if (layout[i][j] < values[0] || layout[i][j] > values[size - 1]) {
                     return false;
                 }
                 // Check if the value layout[i][j] can be added to the Row Set
@@ -176,28 +176,13 @@ public class StdSudokuGrid
         this.layout = layout;
     }
 
-    public int getSectorSize() {
-        return sectorSize;
-    }
-
-    public void setSectorSize(int sectorSize) {
-        this.sectorSize = sectorSize;
-    }
-
     public int[] getValues() {
         return values;
-    }
-
-    public void setValues(int[] values) {
-        this.values = values;
     }
 
     public int getSize() {
         return size;
     }
 
-    public void setSize(int size) {
-        this.size = size;
-    }
 
 } // end of class StdSudokuGrid
