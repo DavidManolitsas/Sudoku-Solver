@@ -28,10 +28,9 @@ public class DancingLinksSolver extends StdSudokuSolver {
     private int[] values;
     //Cover Board
     private int[][] coverBoard;
-    private final int COVER_START_INDEX = 1;
     //Dancing Link
     private ColumnNode head;
-    private List<DancingNode> answer;
+    private List<DancingNode> partialSolution;
     private int[][] solution;
 
     public DancingLinksSolver() {
@@ -69,31 +68,37 @@ public class DancingLinksSolver extends StdSudokuSolver {
 
     //region start solve sudoku
     public void solve() {
-        answer = new LinkedList<DancingNode>();
+        partialSolution = new LinkedList<DancingNode>();
         search(0);
     }
 
     private void search(int key) {
+        // Solution found
         if (head.getRight() == head) {
-            setSolution(answer);
+            setSolution(partialSolution);
         } else {
+            // Find column with the least amount of values
             ColumnNode col = findMinCol();
             col.cover();
 
             for (DancingNode row = col.getDown(); row != col; row = row.getDown()) {
-                answer.add(row);
+                // Add row to the partial solution
+                partialSolution.add(row);
 
-                for (DancingNode j = row.getRight(); j != row; j = j.getRight()) {
-                    j.getColNode().cover();
+                // Cover columns in the row
+                for (DancingNode c = row.getRight(); c != row; c = c.getRight()) {
+                    c.getColNode().cover();
                 }
 
+                // Backtrack
                 search(key + 1);
 
-                row = answer.remove(answer.size() - 1);
+                // No solution found
+                row = partialSolution.remove(partialSolution.size() - 1);
                 col = row.getColNode();
-
-                for (DancingNode j = row.getLeft(); j != row; j = j.getLeft()) {
-                    j.getColNode().uncover();
+                // Uncover the board
+                for (DancingNode c = row.getLeft(); c != row; c = c.getLeft()) {
+                    c.getColNode().uncover();
                 }
             }
 
@@ -166,8 +171,8 @@ public class DancingLinksSolver extends StdSudokuSolver {
     }
 
     private int createBoxConstraints(int[][] coverBoard, int head) {
-        for (int row = COVER_START_INDEX; row <= size; row += sectorSize) {
-            for (int col = COVER_START_INDEX; col <= size; col += sectorSize) {
+        for (int row = 1; row <= size; row += sectorSize) {
+            for (int col = 1; col <= size; col += sectorSize) {
                 for (int valueIndex = 0; valueIndex < values.length; valueIndex++, head++) {
                     for (int rowDelta = 0; rowDelta < sectorSize; rowDelta++) {
                         for (int colDelta = 0; colDelta < sectorSize; colDelta++) {
@@ -183,9 +188,9 @@ public class DancingLinksSolver extends StdSudokuSolver {
     }
 
     private int createColumnConstraints(int[][] coverBoard, int head) {
-        for (int col = COVER_START_INDEX; col <= size; col++) {
+        for (int col = 1; col <= size; col++) {
             for (int valueIndex = 0; valueIndex < values.length; valueIndex++, head++) {
-                for (int row = COVER_START_INDEX; row <= size; row++) {
+                for (int row = 1; row <= size; row++) {
                     int index = getIndex(row, col, valueIndex);
                     coverBoard[index][head] = 1;
                 }
@@ -197,9 +202,9 @@ public class DancingLinksSolver extends StdSudokuSolver {
 
 
     private int createRowConstraints(int[][] coverBoard, int head) {
-        for (int row = COVER_START_INDEX; row <= size; row++) {
+        for (int row = 1; row <= size; row++) {
             for (int valueIndex = 0; valueIndex < values.length; valueIndex++, head++) {
-                for (int col = COVER_START_INDEX; col <= size; col++) {
+                for (int col = 1; col <= size; col++) {
                     int index = getIndex(row, col, valueIndex);
                     coverBoard[index][head] = 1;
                 }
@@ -210,8 +215,8 @@ public class DancingLinksSolver extends StdSudokuSolver {
     }
 
     private int createCellConstraints(int[][] coverBoard, int head) {
-        for (int row = COVER_START_INDEX; row <= size; row++) {
-            for (int col = COVER_START_INDEX; col <= size; col++, head++) {
+        for (int row = 1; row <= size; row++) {
+            for (int col = 1; col <= size; col++, head++) {
                 for (int valueIndex = 0; valueIndex < values.length; valueIndex++) {
                     int index = getIndex(row, col, valueIndex);
                     coverBoard[index][head] = 1;
@@ -228,8 +233,8 @@ public class DancingLinksSolver extends StdSudokuSolver {
         int[][] coverBoard = createCoverBoard();
 
         // Taking into account the values already entered in Sudoku's grid instance
-        for (int row = COVER_START_INDEX; row <= size; row++) {
-            for (int col = COVER_START_INDEX; col <= size; col++) {
+        for (int row = 1; row <= size; row++) {
+            for (int col = 1; col <= size; col++) {
                 int num = layout[row - 1][col - 1];
 
                 if (num != EMPTY) {

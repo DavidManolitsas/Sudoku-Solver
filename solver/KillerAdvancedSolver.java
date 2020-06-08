@@ -14,7 +14,8 @@ import grid.SudokuGrid;
 /**
  * Your advanced solver for Killer Sudoku.
  */
-public class KillerAdvancedSolver extends KillerSudokuSolver {
+public class KillerAdvancedSolver
+        extends KillerSudokuSolver {
     private int size;
     private int[][] layout;
     private List<KillerCage> cages;
@@ -23,14 +24,14 @@ public class KillerAdvancedSolver extends KillerSudokuSolver {
     private int sectorSize;
 
     public KillerAdvancedSolver() {
-        // TODO: any initialisation you want to implement.
+
     } // end of KillerAdvancedSolver()
 
     private void initVariables(SudokuGrid grid) {
         this.layout = ((KillerSudokuGrid) grid).getLayout();
         this.cages = ((KillerSudokuGrid) grid).getCages();
         this.size = ((KillerSudokuGrid) grid).getSize();
-        this.values =((KillerSudokuGrid) grid).getValues();
+        this.values = ((KillerSudokuGrid) grid).getValues();
         this.sectorSize = (int) Math.sqrt(size);
     }
 
@@ -72,49 +73,23 @@ public class KillerAdvancedSolver extends KillerSudokuSolver {
 
 
     public boolean isValid(int row, int col, int value) {
-        // Check constraints of the sudoku board
-        return (validateRow(row, value) && validateColumn(col, value) && validateSector(row, col, value) && validateCage(row, col, value));
-    }
 
-    private boolean validateRow(int row, int value) {
-        // Validate the row
-        for (int col = 0; col < size; col++) {
-            // if the number we are trying to place is already present in that row, return false;
-            if (getCellValue(row, col) == value) {
+        for (int rowCol = 0; rowCol < size; rowCol++) {
+            if (getCellValue(row, rowCol) == value) {
+                return false;
+            } else if (getCellValue(rowCol, col) == value) {
+                return false;
+            } else if (layout[sectorSize * (row / sectorSize) + rowCol / sectorSize][sectorSize * (col / sectorSize) + rowCol % sectorSize] == value) {
                 return false;
             }
         }
-        return true;
-    }
 
-    private boolean validateColumn(int col, int value) {
-        // Validate column
-        for (int row = 0; row < size; row++) {
-            // if the number we are trying to place is already present in that column, return false;
-            if (getCellValue(row, col) == value) {
-                return false;
-            }
+        if (!validateCage(row, col, value)) {
+            return false;
         }
         return true;
     }
 
-    private boolean validateSector(int row, int col, int value) {
-        // Validate sub sector
-        int sectorStartRow = row - row % sectorSize;
-        int sectorEndRow = sectorStartRow + sectorSize;
-        int sectorStartCol = col - col % sectorSize;
-        int sectorEndCol = sectorStartCol + sectorSize;
-
-
-        for (int r = sectorStartRow; r < sectorEndRow; r++) {
-            for (int c = sectorStartCol; c < sectorEndCol; c++) {
-                if (getCellValue(r, c) == value) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
     private boolean validateCage(int row, int col, int value) {
         // Validate Cage

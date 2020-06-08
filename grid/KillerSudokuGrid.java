@@ -75,6 +75,7 @@ public class KillerSudokuGrid extends SudokuGrid {
                 int cageTotal = Integer.parseInt(line[0]);
                 cage.setTotal(cageTotal);
 
+                // Add all the positions to the cage
                 for (int i = 1; i < line.length; i++) {
                     String[] rowCol = line[i].split(",");
                     int row = Integer.parseInt(rowCol[0]);
@@ -84,11 +85,8 @@ public class KillerSudokuGrid extends SudokuGrid {
                     cage.getPositions().add(cagePos);
                 }
                 cages.add(cage);
-                System.out.println(cage.toString());
             }
         }
-
-        System.out.println("\nSize: " + size + " Box Size: " + sectorSize + " Min: " + minValue + " Max: " + maxValue + " Cages: " + cageCount);
 
     } // end of initBoard()
 
@@ -106,14 +104,13 @@ public class KillerSudokuGrid extends SudokuGrid {
         int length = values.length;
 
         for (int i = 0; i < length; i++) {
-            // Find the minimum element in unsorted array
             int minIndex = i;
-            for (int j = i+1; j < length; j++)
-                if (values[j] < values[minIndex])
+            for (int j = i+1; j < length; j++) {
+                if (values[j] < values[minIndex]) {
                     minIndex = j;
+                }
+            }
 
-            // Swap the found minimum element with the first
-            // element
             int temp = values[minIndex];
             values[minIndex] = values[i];
             values[i] = temp;

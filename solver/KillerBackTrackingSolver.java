@@ -162,26 +162,4 @@ public class KillerBackTrackingSolver
         return layout[row][col];
     }
 
-
-    //TODO: testing, delete before submission
-    private String printSudoku() {
-        StringBuilder grid = new StringBuilder();
-
-        int count = 0;
-        for (int[] rw : layout) {
-            for (int v : rw) {
-                count++;
-                if (count == size) {
-                    grid.append(v);
-                } else {
-                    grid.append(v).append(",");
-                }
-            }
-            count = 0;
-            grid.append("\n");
-        }
-
-        return grid.toString();
-    }
-
 } // end of class KillerBackTrackingSolver()

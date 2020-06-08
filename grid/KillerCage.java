@@ -29,18 +29,4 @@ public class KillerCage {
         return positions;
     }
 
-
-    //TODO: testing, delete before submission
-    @Override
-    public String toString() {
-        StringBuilder string = new StringBuilder();
-
-        string.append(total).append(" ");
-
-        for (int[] rowCol : positions) {
-            string.append(rowCol[0]).append(",").append(rowCol[1]).append(" ");
-        }
-
-        return string.toString();
-    }
 }

@@ -28,7 +28,7 @@ public class AlgorXSolver
     private int sectorSize;
     //Cover Board
     private int[][] coverBoard;
-    private final int COVER_START_INDEX = 1;
+//    private final int A1 = 1;
 
 
     public AlgorXSolver() {
@@ -69,21 +69,19 @@ public class AlgorXSolver
 
     /**
      * The following method is based off the sudo code below, derived from Donald Knuth’s Algorithm X:
-     * <p>
+     *
      * 1. If the matrix A has no columns, the current partial solution is a valid solution; terminate successfully.
      * 2. Otherwise, choose a column c (deterministically).
      * 3. Choose a row r such that A[r] = 1 (non-deterministically).
      * 4. Include row r in the partial solution.
      * 5. For each column j such that A[r][j] = 1,
-     * for each row i such that A[i][j] = 1,
-     * delete row i from matrix A.
-     * delete column j from matrix A.
+     *        for each row i such that A[i][j] = 1,
+     *            delete row i from matrix A.
+     *        delete column j from matrix A.
      * 6. Repeat this algorithm recursively on the reduced matrix A.
      *
-     * @param coverBoard
-     *         exact cover board used to solve the sudoku as an exact cover problem
-     * @param columns
-     *         a list of column indexs in the exact cover grid
+     * @param coverBoard exact cover board used to solve the sudoku as an exact cover problem
+     * @param columns a list of column indexs in the exact cover grid
      *
      * @return true/false depending on if the sudoku is solved
      */
@@ -96,22 +94,28 @@ public class AlgorXSolver
         int col = findMinCol(coverBoard, columns);
         for (int row = 0; row < coverBoard.length; row++) {
             if (coverBoard[row][col] == 1) {
+                // Add row to partial solution
                 partialSolution.push(row);
 
+                // Find columns in the same row with 1 in cover board
                 List<Integer> removedCols = new ArrayList<Integer>();
                 for (int c = 0; c < coverBoard[0].length; c++) {
                     if (coverBoard[row][c] == 1) {
                         removedCols.add(c);
                     }
                 }
+                // Remove all columns with a 1 in the row
                 columns.removeAll(removedCols);
 
+                // Cover the board
                 List<int[]> cover = cover(coverBoard, row);
 
+                // Backtrack
                 if (solve(coverBoard, columns)) {
                     return true;
                 }
 
+                // Uncover
                 columns.addAll(removedCols);
                 uncover(coverBoard, cover);
                 partialSolution.pop();
@@ -192,8 +196,8 @@ public class AlgorXSolver
     }
 
     private int createBoxConstraints(int[][] coverBoard, int head) {
-        for (int row = COVER_START_INDEX; row <= size; row += sectorSize) {
-            for (int col = COVER_START_INDEX; col <= size; col += sectorSize) {
+        for (int row = 1; row <= size; row += sectorSize) {
+            for (int col = 1; col <= size; col += sectorSize) {
                 for (int valueIndex = 0; valueIndex < values.length; valueIndex++, head++) {
                     for (int rowDelta = 0; rowDelta < sectorSize; rowDelta++) {
                         for (int colDelta = 0; colDelta < sectorSize; colDelta++) {
@@ -209,9 +213,9 @@ public class AlgorXSolver
     }
 
     private int createColumnConstraints(int[][] coverBoard, int head) {
-        for (int col = COVER_START_INDEX; col <= size; col++) {
+        for (int col = 1; col <= size; col++) {
             for (int valueIndex = 0; valueIndex < values.length; valueIndex++, head++) {
-                for (int row = COVER_START_INDEX; row <= size; row++) {
+                for (int row = 1; row <= size; row++) {
                     int index = getIndex(row, col, valueIndex);
                     coverBoard[index][head] = 1;
                 }
@@ -223,9 +227,9 @@ public class AlgorXSolver
 
 
     private int createRowConstraints(int[][] coverBoard, int head) {
-        for (int row = COVER_START_INDEX; row <= size; row++) {
+        for (int row = 1; row <= size; row++) {
             for (int valueIndex = 0; valueIndex < values.length; valueIndex++, head++) {
-                for (int col = COVER_START_INDEX; col <= size; col++) {
+                for (int col = 1; col <= size; col++) {
                     int index = getIndex(row, col, valueIndex);
                     coverBoard[index][head] = 1;
                 }
@@ -236,8 +240,8 @@ public class AlgorXSolver
     }
 
     private int createCellConstraints(int[][] coverBoard, int head) {
-        for (int row = COVER_START_INDEX; row <= size; row++) {
-            for (int col = COVER_START_INDEX; col <= size; col++, head++) {
+        for (int row = 1; row <= size; row++) {
+            for (int col = 1; col <= size; col++, head++) {
                 for (int valueIndex = 0; valueIndex < values.length; valueIndex++) {
                     int index = getIndex(row, col, valueIndex);
                     coverBoard[index][head] = 1;
@@ -254,8 +258,8 @@ public class AlgorXSolver
         int[][] coverBoard = createCoverBoard();
 
         // Taking into account the values already entered in Sudoku's grid instance
-        for (int row = COVER_START_INDEX; row <= size; row++) {
-            for (int col = COVER_START_INDEX; col <= size; col++) {
+        for (int row = 1; row <= size; row++) {
+            for (int col = 1; col <= size; col++) {
                 int num = layout[row - 1][col - 1];
 
                 if (num != EMPTY) {
@@ -288,18 +292,6 @@ public class AlgorXSolver
         }
 
         return solution;
-    }
-
-    //TODO: for testing
-    public void printCoverBoard() {
-        System.out.println("\nExact Cover Board:");
-        for (int i = 0; i < coverBoard.length; i++) {
-            for (int j = 0; j < coverBoard[0].length; j++) {
-                System.out.print(coverBoard[i][j] + " ");
-            }
-
-            System.out.println();
-        }
     }
 
 } // end of class AlgorXSolver
