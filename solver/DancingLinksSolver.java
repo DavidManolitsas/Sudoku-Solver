@@ -124,13 +124,16 @@ public class DancingLinksSolver extends StdSudokuSolver {
         ColumnNode headNode = new ColumnNode("head");
         List<ColumnNode> columnNodes = new ArrayList<>();
 
+        // Create and link all column nodes
         for (int i = 0; i < columns; i++) {
             ColumnNode node = new ColumnNode(Integer.toString(i));
             columnNodes.add(node);
             headNode = (ColumnNode) headNode.linkRight(node);
         }
+        // End of the list is reached, set head back to the first node
         headNode = headNode.getRight().getColNode();
 
+        // Iterate through the cover board, if a value is found create a new node
         for (int[] row : layout) {
             DancingNode prevNode = null;
 
@@ -144,8 +147,11 @@ public class DancingLinksSolver extends StdSudokuSolver {
                         prevNode = newNode;
                     }
 
+                    // Insert a new node vertically (Top-down)
                     col.getUp().linkDown(newNode);
+                    // Insert a node horizontally (left-right)
                     prevNode = prevNode.linkRight(newNode);
+
                     col.incrementSize();
                 }
             }
