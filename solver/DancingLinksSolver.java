@@ -86,8 +86,8 @@ public class DancingLinksSolver extends StdSudokuSolver {
                 partialSolution.add(row);
 
                 // Cover columns in the row
-                for (DancingNode c = row.getRight(); c != row; c = c.getRight()) {
-                    c.getColNode().cover();
+                for (DancingNode rowNode = row.getRight(); rowNode != row; rowNode = rowNode.getRight()) {
+                    rowNode.getColNode().cover();
                 }
 
                 // Backtrack
@@ -97,8 +97,8 @@ public class DancingLinksSolver extends StdSudokuSolver {
                 row = partialSolution.remove(partialSolution.size() - 1);
                 col = row.getColNode();
                 // Uncover the board
-                for (DancingNode c = row.getLeft(); c != row; c = c.getLeft()) {
-                    c.getColNode().uncover();
+                for (DancingNode rowNode = row.getLeft(); rowNode != row; rowNode = rowNode.getLeft()) {
+                    rowNode.getColNode().uncover();
                 }
             }
 
