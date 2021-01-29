@@ -7,7 +7,7 @@ The solver will then run with parammeters that will solve the sudoku with one of
 ## Compile
 To compile the files, run the following command from the root directory:
 
-"javac *.java grid/*.java solver/*.java"
+javac *.java grid/*.java solver/*.java
 
 To run the program from cmd line:
 
