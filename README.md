@@ -21,4 +21,3 @@ solverType: Type of solver to use, depends on the game type
     - Killer Sudoku: (backtracking or advanced)
 visualisation: whether to output grid before and another after solving, one of [Y,N]
 output fileName: (optional) If specified, the solved grid will be outputted to this file.
-
