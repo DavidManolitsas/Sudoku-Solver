@@ -15,10 +15,10 @@ To run the program from cmd line:
 `java RmitSudokuTester [puzzleFileName] [gameType] [solverType] [visualisation] <outputFileName>`
 
 **Where:**
-puzzleFileName: name of file containing the input puzzle/grid to solve.
-game type: type of sudoku game, one of {sudoku, killer}.
-solverType: Type of solver to use, depends on the game type 
+- puzzleFileName: name of file containing the input puzzle/grid to solve.
+- game type: type of sudoku game, one of {sudoku, killer}.
+- solverType: Type of solver to use, depends on the game type 
     - Standard Sudoku: (backtracking, algorx or dancing).
     - Killer Sudoku: (backtracking or advanced)
-visualisation: whether to output grid before and another after solving, one of [Y,N]
-output fileName: (optional) If specified, the solved grid will be outputted to this file.
+- visualisation: whether to output grid before and another after solving, one of [Y,N]
+- output fileName: (optional) If specified, the solved grid will be outputted to this file.
