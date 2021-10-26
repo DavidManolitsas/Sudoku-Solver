@@ -1,7 +1,5 @@
-/**
- * @author Jeffrey Chan & Minyi Li, RMIT 2020
- */
-package grid;
+
+package com.manolitsas.david.grid;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,8 +11,9 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-
 /**
+ * @author Jeffrey Chan & Minyi Li, RMIT 2020
+ *
  * Class implementing the grid for Killer Sudoku.
  * Extends SudokuGrid (hence implements all abstract methods in that abstract
  * class).

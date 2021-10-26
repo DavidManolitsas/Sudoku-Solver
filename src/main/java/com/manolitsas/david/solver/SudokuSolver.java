@@ -1,13 +1,10 @@
-/*
- * @author Jeffrey Chan & Minyi Li, RMIT 2020
- */
+package com.manolitsas.david.solver;
 
-package solver;
-
-import grid.SudokuGrid;
-
+import com.manolitsas.david.grid.SudokuGrid;
 
 /**
+ * @author Jeffrey Chan & Minyi Li, RMIT 2020
+ *
  * Abstract class of a Sudoku solver.  Defines the interface for all solvers.
  */
 public abstract class SudokuSolver

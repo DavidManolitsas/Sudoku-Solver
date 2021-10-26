@@ -1,14 +1,12 @@
-/*
- * @author Jeffrey Chan & Minyi Li, RMIT 2020
- */
+package com.manolitsas.david.solver;
 
-package solver;
 
-import grid.StdSudokuGrid;
-import grid.SudokuGrid;
-
+import com.manolitsas.david.grid.StdSudokuGrid;
+import com.manolitsas.david.grid.SudokuGrid;
 
 /**
+ * @author David Manolitsas
+ *
  * Backtracking solver for standard Sudoku.
  */
 public class BackTrackingSolver extends StdSudokuSolver {

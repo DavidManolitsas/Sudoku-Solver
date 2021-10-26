@@ -1,13 +1,10 @@
+package com.manolitsas.david.grid;
+
+import java.io.*;
+
 /**
  * @author Jeffrey Chan & Minyi Li, RMIT 2020
- */
-
- package grid;
-
- import java.io.*;
-
-
-/**
+ *
  * Abstract class representing the general interface for a Sudoku grid.
  * Both standard and Killer Sudoku extend from this abstract class.
  */

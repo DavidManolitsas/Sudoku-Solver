@@ -1,24 +1,87 @@
 # Sudoku Solver
 
-This was a final year assignment as part of my Master of Information Technology degree in which we were tasked with creating a sudoku solver.
-The sudoku solver reads in an input file, that outlines the grid size (which can be of various sizes) and the starting number postiions. 
-The solver will then run with parammeters that will solve the sudoku with one of the three algorithms. 
+The Sudoku Solver utilises various algorithms to solve both a traditional 
+[sudoku](https://sudoku.com/how-to-play/sudoku-rules-for-complete-beginners/) 
+and a [killer sudoku](https://killersudoku.com/pages/how-to-play-killer-sudoku) 
+puzzle. The algorithms used to solve both these types of sudoku's include the
+[Backtracking Algorithm](https://www.geeksforgeeks.org/backtracking-algorithms/),
+[Knuth's Algorithm X](https://www.geeksforgeeks.org/exact-cover-problem-algorithm-x-set-1/),
+and the [Knuth's Dancing Link (DLX) Algorithm](https://www.geeksforgeeks.org/exact-cover-problem-algorithm-x-set-2-implementation-dlx/?ref=lbp).
 
-## Compile and Run
+## About the Algorithms
 
-To compile the files, run the following command from the root directory:
+### Backtracking Algorithm
 
-`javac *.java grid/*.java solver/*.java`
+The Backtracking Algorithm is an algorithmic-technique for solving problems 
+recursively by trying to build a solution incrementally, one piece at a time, 
+removing those solutions that fail to satisfy the constraints of the problem at
+any point of time.
 
-To run the program from cmd line:
+### Knuth's Algorithm X
 
-`java RmitSudokuTester [puzzleFileName] [gameType] [solverType] [visualisation] <outputFileName>`
+The exact cover problem and algorithm x are synonymous. It is described as a 
+given a collection S of subsets of set X, an exact cover is the subset S* of S
+such that each element of X is contained is exactly one subset of S*.
 
-**Where:**
-- puzzleFileName: name of file containing the input puzzle/grid to solve.
-- game type: type of sudoku game, one of {sudoku, killer}.
-- solverType: Type of solver to use, depends on the game type 
-    - Standard Sudoku: (backtracking, algorx or dancing).
-    - Killer Sudoku: (backtracking or advanced)
-- visualisation: whether to output grid before and another after solving, one of [Y,N]
-- output fileName: (optional) If specified, the solved grid will be outputted to this file.
+It should satisfy following two conditions:
+* The Intersection of any two subsets in S* should be empty. That is, each 
+  element of X should be contained in at most one subset of S*
+* Union of all subsets in S* is X. That means union should contain all the 
+  elements in set X, so we can say that S* covers X.
+
+
+### Knuth's Dancing Link Algorithm
+
+The Dancing Link algorithm is an iteration on Knuth's Algorithm X, Dancing link
+technique relies on the idea of doubly circular linked list. Each row of the 
+matrix is thus a circular linked list linked to each other with left and right 
+pointers and each column of the matrix will also be circular linked list linked
+to each above with up and down pointer.
+
+
+## Compile
+
+To compile the files, run the following command line:
+
+```bash
+javac src/main/java/com/**/*.java
+```
+
+Alternatively, if your shell does not support `**`: 
+
+```bash
+cd src/main/java/com/manolitsas/david/
+javac *.java grid/*.java solver/*.java
+```
+
+## Run
+
+To run the program from command line:
+
+```bash
+java -cp ./src/main/java/ com.manolitsas.david.RmitSudoku [file name] [game type] [solver type] [visualisation] [outputFileName]
+```
+
+Standard Sudoku Backtracking example:
+```bash
+java -cp ./src/main/java/ com.manolitsas.david.RmitSudoku input/easy-std-44-01.in sudoku backtracking Y output/output.txt
+```
+
+How to Run?
+
+* `file name` select a file from [input](input) with `.in` extension. The file names are structured 
+  as `[difficulty]-[type]-[size]-[id].in` e.g. easy-std-44-01.in
+* `game type` select between standard or killer sudoku  
+    * `sudoku` = standard sudoku  
+    * `killer` = killer sudoku
+* `solver type` select which algorithm to use
+    * Standard Sudoku
+        * `backtracking` = Backtracking Algorithm
+        * `algorx` = Algorithm X
+        * `dancing` = Dancing Link Algorithm
+    * Killer Sudoku
+        * `backtracking` = Backtracking Algorithm
+        * `advanced` = An optimised Backtracking Algorithm solution
+* `visualisation` whether to print the solution or not use `Y` yes or `N` no
+* `outputFile` (optional) set an optional output file e.g. `output/output.txt`
+

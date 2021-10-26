@@ -1,17 +1,14 @@
-/*
- * @author Jeffrey Chan & Minyi Li, RMIT 2020
- */
-
-package solver;
+package com.manolitsas.david.solver;
 
 import java.util.List;
 
-import grid.KillerCage;
-import grid.KillerSudokuGrid;
-import grid.SudokuGrid;
-
+import com.manolitsas.david.grid.KillerCage;
+import com.manolitsas.david.grid.KillerSudokuGrid;
+import com.manolitsas.david.grid.SudokuGrid;
 
 /**
+ * @author David Manolitsas
+ *
  * Your advanced solver for Killer Sudoku.
  */
 public class KillerAdvancedSolver

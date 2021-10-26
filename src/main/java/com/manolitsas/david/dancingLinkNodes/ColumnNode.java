@@ -1,9 +1,7 @@
-package dancingLinkNodes;
+package com.manolitsas.david.dancingLinkNodes;
 
 /**
  * @author David Manolitsas
- * @project rmitSudoku
- * @date 2020-05-26
  */
 public class ColumnNode extends DancingNode {
 

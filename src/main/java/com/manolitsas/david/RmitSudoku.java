@@ -1,29 +1,23 @@
-/*
- * This is the main java file for assignment 2 of RMIT Algorithms & Analysis,
- * 2020 semester 1.
- *
- * The assignment is about implementing and exploring algorithms and
- * data structures for Sudoku and Killer Sudoku.
- *
- * @author Jeffrey Chan & Minyi Li, RMIT 2020
- */
+package com.manolitsas.david;
 
 import java.io.*;
 
-import grid.*;
-import solver.*;
+import com.manolitsas.david.grid.KillerSudokuGrid;
+import com.manolitsas.david.grid.StdSudokuGrid;
+import com.manolitsas.david.grid.SudokuGrid;
+import com.manolitsas.david.solver.*;
 
 
 /**
- * Main class for the Sudoku assignment.  Can run both Sudoku and Killer Sudoku
- * solvers.
- *
- * It implements the basic framework for the assignment code.
- * Generally no need to modify this, there are many abstract and non-abstract
- * classes to customise your implementation.
+ * @author Jeffrey Chan & Minyi Li, RMIT 2020
+ *         <p>
+ *         Main class for the Sudoku assignment.  Can run both Sudoku and Killer Sudoku solvers.
+ *         <p>
+ *         It implements the basic framework for the assignment code. Generally no need to modify this, there are many abstract and
+ *         non-abstract classes to customise your implementation.
  */
-public class RmitSudoku
-{
+public class RmitSudoku {
+
     /**
      * Name of class, used in error messages.
      */
@@ -31,25 +25,24 @@ public class RmitSudoku
 
 
     /**
-     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // read command line arguments
-	    if (args.length < 4) {
-	        System.err.println("Incorrect number of arguments.\n");
-	        usage(progName);
-	    }
+        if (args.length < 4) {
+            System.err.println("Incorrect number of arguments.\n");
+            usage(progName);
+        }
 
-	    // grid filename
-	    String initGridFilename = args[0];
+        // grid filename
+        String initGridFilename = args[0];
         // type of game
         String gameType = args[1];
         // type of solver
         String solverType = args[2];
         // whether to visualise
         boolean bVisualise = false;
-        if (args[3].compareTo("y") == 0) {
+        if (args[3].compareToIgnoreCase("y") == 0) {
             bVisualise = true;
         }
 
@@ -87,8 +80,8 @@ public class RmitSudoku
         grid = pair.grid;
         solver = pair.solver;
 
-        assert(grid != null);
-        assert(solver != null);
+        assert (grid != null);
+        assert (solver != null);
 
         // start timer
         long startTime = System.nanoTime();
@@ -112,8 +105,7 @@ public class RmitSudoku
 
             if (bSolvedSuccess) {
                 System.out.println("Solution found!\n");
-            }
-            else {
+            } else {
                 System.out.println("No solution found!\n");
             }
 
@@ -126,17 +118,14 @@ public class RmitSudoku
 
             // display time taken
             System.out.println("time taken = "
-                + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec.\n");
-
+                               + ((double) (endTime - startTime)) / Math.pow(10, 9) + " sec.\n");
 
             // Check and validate solution
             if (grid.validate()) {
                 System.out.println("Valid solution.");
-            }
-            else {
+            } else {
                 System.out.println("Invalid solution.");
             }
-
 
             // output solved grid to file
             if (solvedGridOutFilename != null) {
@@ -146,8 +135,7 @@ public class RmitSudoku
         } // end of try-block
         catch (FileNotFoundException e) {
             System.err.println("File not found. " + e.getMessage());
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("IOExeption occurred. " + e.getMessage());
         }
     } // end of main()
@@ -167,7 +155,7 @@ public class RmitSudoku
         System.err.println("[solver type] (for Killer Sudoku) = {backtracking | advanced}");
         System.err.println("<visualisation> = <y | n>");
 
-	    System.exit(1);
+        System.exit(1);
     } // end of usage()
 
 
@@ -175,8 +163,7 @@ public class RmitSudoku
      * Contruct appropriate grid and solver for (standard) Sudoku.
      *
      * @param solverType Type of solver we want to use and construct.
-     * @param pair Used to return the constructed grid and solver (return by
-     *               reference).
+     * @param pair       Used to return the constructed grid and solver (return by reference).
      */
     private static void initSudokuSolver(String solverType, SolverGridPair pair) {
         SudokuGrid grid = null;
@@ -185,7 +172,7 @@ public class RmitSudoku
         // check with solver (and grid) to construct
         // currently all grids are the same for all solvers, but there are
         // possibility this might not be in the future iterations.
-        switch(solverType) {
+        switch (solverType) {
             case "backtracking":
                 grid = new StdSudokuGrid();
                 solver = new BackTrackingSolver();
@@ -212,8 +199,7 @@ public class RmitSudoku
      * Contruct appropriate grid and solver for Killer Sudoku.
      *
      * @param solverType Type of solver we want to use and construct.
-     * @param pair Used to return the constructed grid and solver (return by
-     *               reference).
+     * @param pair       Used to return the constructed grid and solver (return by reference).
      */
     public static void initKillerSolver(String solverType, SolverGridPair pair) {
         SudokuGrid grid = null;
@@ -222,7 +208,7 @@ public class RmitSudoku
         // check with solver (and grid) to construct
         // currently all grids all the same for all solvers, but there are
         // possibility this might not be in the future iterations.
-        switch(solverType) {
+        switch (solverType) {
             case "backtracking":
                 grid = new KillerSudokuGrid();
                 solver = new KillerBackTrackingSolver();
@@ -242,12 +228,13 @@ public class RmitSudoku
 
 
     /**
-     * Inner class used to return a pair of values.
-     * Note on core teaching servers javafx.util.Pair isn't available.
+     * Inner class used to return a pair of values. Note on core teaching servers javafx.util.Pair isn't available.
      */
     protected static class SolverGridPair {
+
         public SudokuGrid grid;
         public SudokuSolver solver;
+
     } // end of class SolverGridPair
 
 } // end of class RmitSudoku

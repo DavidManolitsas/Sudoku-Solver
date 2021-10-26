@@ -1,18 +1,16 @@
-/*
- * @author Jeffrey Chan & Minyi Li, RMIT 2020
- */
-package solver;
+package com.manolitsas.david.solver;
+
+import com.manolitsas.david.grid.StdSudokuGrid;
+import com.manolitsas.david.grid.SudokuGrid;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
-import grid.StdSudokuGrid;
-import grid.SudokuGrid;
-
-
 /**
+ * @author David Manolitsas
+ *
  * Algorithm X solver for standard Sudoku.
  */
 public class AlgorXSolver

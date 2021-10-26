@@ -1,7 +1,4 @@
-/**
- * @author Jeffrey Chan & Minyi Li, RMIT 2020
- */
-package grid;
+package com.manolitsas.david.grid;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,6 +10,8 @@ import java.util.Set;
 
 
 /**
+ * @author Jeffrey Chan & Minyi Li, RMIT 2020
+ *
  * Class implementing the grid for standard Sudoku.
  * Extends SudokuGrid (hence implements all abstract methods in that abstract
  * class).

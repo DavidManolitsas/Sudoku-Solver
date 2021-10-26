@@ -1,21 +1,18 @@
-/*
- * @author Jeffrey Chan & Minyi Li, RMIT 2020
- */
+package com.manolitsas.david.solver;
 
-package solver;
+import com.manolitsas.david.dancingLinkNodes.ColumnNode;
+import com.manolitsas.david.dancingLinkNodes.DancingNode;
+import com.manolitsas.david.grid.StdSudokuGrid;
+import com.manolitsas.david.grid.SudokuGrid;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import dancingLinkNodes.ColumnNode;
-import dancingLinkNodes.DancingNode;
-import grid.StdSudokuGrid;
-import grid.SudokuGrid;
-
-
 /**
+ * @author David Manolitsas
+ *
  * Dancing links solver for standard Sudoku.
  */
 public class DancingLinksSolver extends StdSudokuSolver {

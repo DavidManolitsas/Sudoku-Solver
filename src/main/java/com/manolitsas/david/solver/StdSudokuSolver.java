@@ -1,11 +1,8 @@
-/*
- * @author Jeffrey Chan & Minyi Li, RMIT 2020
- */
-
-package solver;
-
+package com.manolitsas.david.solver;
 
 /**
+ * @author Jeffrey Chan & Minyi Li, RMIT 2020
+ *
  * Abstract class for common attributes or methods for solvers of standard
  * Sudoku.
  * Note it is not necessary to use this, but provided in case you wanted to do
