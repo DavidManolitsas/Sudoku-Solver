@@ -1,5 +1,8 @@
 # Sudoku Solver
 
+A command line java program that solves the traditional sudoku and killer 
+sudoku puzzles using various algorithms.
+
 The Sudoku Solver utilises various algorithms to solve both a traditional 
 [sudoku](https://sudoku.com/how-to-play/sudoku-rules-for-complete-beginners/) 
 and a [killer sudoku](https://killersudoku.com/pages/how-to-play-killer-sudoku) 
